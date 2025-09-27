@@ -1,7 +1,10 @@
 import React from 'react';
 import { Typography, Box } from '@mui/material';
+import useCatsList from './hooks/use-cats-list';
 
 const CatsList: React.FC = () => {
+  const { data, isLoading, error } = useCatsList();
+  console.log(data, isLoading, error);
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom>

@@ -12,10 +12,11 @@ export default function useCatsList() {
 
   const [allCats, setAllCats] = useState<Array<Cat>>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [maxAttemptsReached, setMaxAttemptsReached] = useState(false);
 
   const { data, isLoading: isGetRandomCatsLoading, error, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
-  // Update allCats when initial data arrives
+  // update allCats when initial data arrives
   useEffect(() => {
     if (data && allCats.length === 0) {
       setAllCats(data);
@@ -47,24 +48,40 @@ export default function useCatsList() {
       const existingCatIds = new Set(allCats.map((cat) => cat.id));
       const newCats: Array<Cat> = [];
       let attempts = 0;
-      const maxAttempts = 20;
+      const maxAttempts = 15;
+      const targetNewCats = 10;
 
-      while (newCats.length < 10 && attempts < maxAttempts) {
+      console.log(`Starting to fetch ${targetNewCats} new cats. Current total: ${allCats.length}`);
+
+      while (newCats.length < targetNewCats && attempts < maxAttempts) {
         attempts++;
+
+        // add small delay to avoid rate limiting
+        if (attempts > 1) {
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+
         const fetchedCats = await fetchUniqueCats();
         const uniqueCats = fetchedCats.filter((cat) => !existingCatIds.has(cat.id));
         newCats.push(...uniqueCats);
         uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
 
+        const efficiency = ((uniqueCats.length / fetchedCats.length) * 100).toFixed(1);
         console.log(
-          `Attempt ${attempts}: Fetched ${fetchedCats.length} cats, ${uniqueCats.length} unique, total new: ${newCats.length}`
+          `Attempt ${attempts}: Fetched ${fetchedCats.length} cats, ${uniqueCats.length} unique (${efficiency}% efficiency), total new: ${newCats.length}/${targetNewCats}`
         );
+
+        // there is no exlude ids on the api so we need to check if we are getting unique cats
+        if (attempts > 5 && uniqueCats.length === 0) {
+          setMaxAttemptsReached(true);
+          console.warn('No unique cats found in recent attempts. API might be rate limited or out of unique cats.');
+          break;
+        }
       }
 
       if (newCats.length > 0) {
-        // new cats at the top of the list
         setAllCats((prev) => [...newCats, ...prev]);
-        console.log(`Added ${newCats.length} new cats to the top`);
+        console.log(`Successfully added ${newCats.length} new cats to the top (${attempts} attempts)`);
       } else {
         console.log('No new unique cats found after maximum attempts');
       }
@@ -82,7 +99,7 @@ export default function useCatsList() {
 
   return {
     cats: allCats,
-    isLoading: isGetRandomCatsLoading || isLoadingMore,
+    isLoading: isGetRandomCatsLoading || isLoadingMore || maxAttemptsReached,
     error,
     closeCatModal,
     openCatModal,

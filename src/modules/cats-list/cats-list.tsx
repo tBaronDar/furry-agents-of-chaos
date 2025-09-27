@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Box, Stack } from '@mui/material';
 import useCatsList from './hooks/use-cats-list';
 import { type Cat } from '../../shared/dto/cat-read';
+import CatCard from './components/cat-card';
 
 export type CatsListProps = {
   cats: Array<Cat>;
@@ -30,9 +31,14 @@ const CatsListInner = (props: CatsListProps) => {
           Random Cats
         </Typography>
         <Typography variant='body1' color='text.secondary'>
-          Welcome to CatLover! Here you&apos;ll see random cat images.
+          Welcome to Furry Agents of Chaos or FAC! Here yousee random cat images.
         </Typography>
       </Box>
+      <Stack direction='row' spacing={2}>
+        {cats.map((cat) => (
+          <CatCard key={cat.id} cat={cat} />
+        ))}
+      </Stack>
     </Stack>
   );
 };

@@ -1,10 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { ModalType } from '../utils/enums';
 
 interface AppState {
   theme: 'light' | 'dark';
   guestId: string;
   isModalOpen: boolean;
-  currentModal: 'cat' | 'breed' | null;
+  currentModal: ModalType | null;
   currentModalId: string | null;
 }
 
@@ -26,7 +27,7 @@ const appSlice = createSlice({
     setGuestId(state, action: PayloadAction<string>) {
       state.guestId = action.payload;
     },
-    openModal(state, action: PayloadAction<{ type: 'cat' | 'breed'; id: string }>) {
+    openModal(state, action: PayloadAction<{ type: ModalType; id: string }>) {
       state.isModalOpen = true;
       state.currentModal = action.payload.type;
       state.currentModalId = action.payload.id;

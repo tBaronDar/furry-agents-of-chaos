@@ -1,5 +1,12 @@
 import React from 'react';
-import { Typography, Box, Stack, DialogTitle, DialogContent, DialogActions, Button, Dialog } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
 import useCatsList from './hooks/use-cats-list';
 import { type Cat } from '../../shared/dto/cat-read';
 import CatCard from './components/cat-card';
@@ -23,8 +30,7 @@ const CatsListSkeleton = () => {
 };
 
 const CatsListInner = (props: CatsListProps) => {
-  const { cats, isLoading, isModalOpen, closeCatModal, openCatModal } = props;
-  console.log(cats, isLoading);
+  const { cats, isModalOpen, closeCatModal, openCatModal } = props;
   return (
     <>
       <Dialog open={isModalOpen} onClose={() => closeCatModal()}>

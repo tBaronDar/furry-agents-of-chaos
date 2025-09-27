@@ -10,8 +10,12 @@ type CatCardProps = {
 export default function CatCard(props: CatCardProps) {
   const { cat, openCatModal } = props;
 
+  const handleClick = () => {
+    openCatModal(cat.id);
+  };
+
   return (
-    <Card sx={{ cursor: 'pointer' }} onClick={() => openCatModal(cat.id)}>
+    <Card sx={{ cursor: 'pointer' }} onClick={handleClick}>
       <CardMedia component='img' height='140' image={cat.url} alt='Cat' />
     </Card>
   );

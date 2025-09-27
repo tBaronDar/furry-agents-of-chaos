@@ -4,7 +4,7 @@ import { type AppStore } from './store';
 
 // Lazy load components for better performance
 const Layout = lazy(() => import('../shared/components/main-layout'));
-const CatsList = lazy(() => import('../modules/cats-list/cats-list'));
+const CatsPage = lazy(() => import('../modules/cats-list/cats-page'));
 const BreedsList = lazy(() => import('../modules/breeds-list/breeds-list'));
 const Favorites = lazy(() => import('../modules/favorites/favorites'));
 const BreedModal = lazy(() => import('../shared/components/modals/breed-modal'));
@@ -19,7 +19,7 @@ export default function router(_store: AppStore) {
       children: [
         {
           index: true,
-          element: <CatsList />,
+          element: <CatsPage />,
         },
         {
           path: 'breeds',

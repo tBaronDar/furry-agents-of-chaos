@@ -4,33 +4,36 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useCatsList from './hooks/use-cats-list';
 import { type Cat } from '../../shared/dto/cat-read';
-import CatCard from './components/cat-card';
 import CatModal from '../../shared/components/modals/cat-modal';
 import Button from '@mui/material/Button';
+import CatsList from './components/cats-list';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../config/store';
 
 export type CatsListProps = {
-  cats: Array<Cat>;
-  isLoading: boolean;
+  newCats: Array<Cat>;
+  oldCats: Array<Cat>;
   closeCatModal: () => void;
   openCatModal: (id: string) => void;
   selectedCatId: string | null;
   selectedCat: Cat;
   handleGetMoreCats: () => void;
+  maxAttemptsReached: boolean;
 };
 
-const CatsListSkeleton = () => {
-  return (
-    <Box>
-      <Typography variant='h4' component='h1' gutterBottom>
-        Random Cats
-      </Typography>
-    </Box>
-  );
-};
-
-const CatsListInner = (props: CatsListProps) => {
-  const { cats, isLoading, selectedCatId, selectedCat, closeCatModal, openCatModal, handleGetMoreCats } = props;
+const CatsPageInner = (props: CatsListProps) => {
+  const {
+    newCats,
+    oldCats,
+    selectedCatId,
+    selectedCat,
+    closeCatModal,
+    openCatModal,
+    handleGetMoreCats,
+    maxAttemptsReached,
+  } = props;
   console.log('selectedCatId', selectedCatId);
+  const isFetchTenCatsLoading = useSelector((state: RootState) => state.loading.isLoading);
 
   return (
     <>
@@ -65,43 +68,58 @@ const CatsListInner = (props: CatsListProps) => {
               Welcome to Furry Agents of Chaos or FAC! Here yousee random cat images.
             </Typography>
           </Box>
-          <Button variant='contained' color='primary' onClick={() => handleGetMoreCats()} disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'More Agents'}
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => handleGetMoreCats()}
+            disabled={isFetchTenCatsLoading || maxAttemptsReached}>
+            More Agents
           </Button>
         </Stack>
-        <Stack
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: '16px',
-            marginTop: '16px',
-            padding: '8px',
-          }}>
-          {cats.map((cat) => (
-            <CatCard key={cat.id} cat={cat} openCatModal={openCatModal} />
-          ))}
+        <Stack>
+          <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 2, mb: 1 }}>
+            🆕 New Agents ({newCats.length})
+          </Typography>
+          <CatsList cats={newCats} openCatModal={openCatModal} />
+
+          {oldCats.length > 0 && (
+            <>
+              <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 3, mb: 1 }}>
+                📚 Previous Agents ({oldCats.length})
+              </Typography>
+              <CatsList cats={oldCats} openCatModal={openCatModal} />
+            </>
+          )}
         </Stack>
       </Stack>
     </>
   );
 };
 
-const CatsList: React.FC = () => {
-  const { cats, isLoading, closeCatModal, openCatModal, selectedCatId, selectedCat, handleGetMoreCats } = useCatsList();
+const CatsPage: React.FC = () => {
+  const {
+    newCats,
+    oldCats,
+    closeCatModal,
+    openCatModal,
+    selectedCatId,
+    selectedCat,
+    handleGetMoreCats,
+    maxAttemptsReached,
+  } = useCatsList();
 
-  return isLoading ? (
-    <CatsListSkeleton />
-  ) : (
-    <CatsListInner
-      cats={cats}
-      isLoading={isLoading}
+  return (
+    <CatsPageInner
+      newCats={newCats}
+      oldCats={oldCats}
       closeCatModal={closeCatModal}
       openCatModal={openCatModal}
       selectedCatId={selectedCatId}
       selectedCat={selectedCat}
       handleGetMoreCats={handleGetMoreCats}
+      maxAttemptsReached={maxAttemptsReached}
     />
   );
 };
 
-export default CatsList;
+export default CatsPage;

@@ -10,18 +10,19 @@ export default function useCatsList() {
   const dispatch = useDispatch();
   const selectedCatId = useSelector((state: RootState) => state.app.selectedCatId);
 
-  const [allCats, setAllCats] = useState<Array<Cat>>([]);
+  const [newCats, setNewCats] = useState<Array<Cat>>([]);
+  const [oldCats, setOldCats] = useState<Array<Cat>>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [maxAttemptsReached, setMaxAttemptsReached] = useState(false);
 
   const { data, isLoading: isGetRandomCatsLoading, error, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
-  // update allCats when initial data arrives
+  // update newCats when initial data arrives
   useEffect(() => {
-    if (data && allCats.length === 0) {
-      setAllCats(data);
+    if (data && newCats.length === 0) {
+      setNewCats(data);
     }
-  }, [data, allCats.length]);
+  }, [data, newCats.length]);
 
   //state staff
   const closeCatModal = () => dispatch(closeModal());
@@ -45,15 +46,17 @@ export default function useCatsList() {
     setIsLoadingMore(true);
 
     try {
-      const existingCatIds = new Set(allCats.map((cat) => cat.id));
-      const newCats: Array<Cat> = [];
+      const existingCatIds = new Set([...newCats, ...oldCats].map((cat) => cat.id));
+      const freshCats: Array<Cat> = [];
       let attempts = 0;
       const maxAttempts = 15;
       const targetNewCats = 10;
 
-      console.log(`Starting to fetch ${targetNewCats} new cats. Current total: ${allCats.length}`);
+      console.log(
+        `Starting to fetch ${targetNewCats} new cats. Current new: ${newCats.length}, old: ${oldCats.length}`
+      );
 
-      while (newCats.length < targetNewCats && attempts < maxAttempts) {
+      while (freshCats.length < targetNewCats && attempts < maxAttempts) {
         attempts++;
 
         // add small delay to avoid rate limiting
@@ -63,12 +66,12 @@ export default function useCatsList() {
 
         const fetchedCats = await fetchUniqueCats();
         const uniqueCats = fetchedCats.filter((cat) => !existingCatIds.has(cat.id));
-        newCats.push(...uniqueCats);
+        freshCats.push(...uniqueCats);
         uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
 
         const efficiency = ((uniqueCats.length / fetchedCats.length) * 100).toFixed(1);
         console.log(
-          `Attempt ${attempts}: Fetched ${fetchedCats.length} cats, ${uniqueCats.length} unique (${efficiency}% efficiency), total new: ${newCats.length}/${targetNewCats}`
+          `Attempt ${attempts}: Fetched ${fetchedCats.length} cats, ${uniqueCats.length} unique (${efficiency}% efficiency), total new: ${freshCats.length}/${targetNewCats}`
         );
 
         // there is no exlude ids on the api so we need to check if we are getting unique cats
@@ -79,9 +82,11 @@ export default function useCatsList() {
         }
       }
 
-      if (newCats.length > 0) {
-        setAllCats((prev) => [...newCats, ...prev]);
-        console.log(`Successfully added ${newCats.length} new cats to the top (${attempts} attempts)`);
+      if (freshCats.length > 0) {
+        // Move current new cats to old cats, then set fresh cats as new cats
+        setOldCats((prev) => [...newCats, ...prev]);
+        setNewCats(freshCats);
+        console.log(`Successfully added ${freshCats.length} new cats. Moved ${newCats.length} cats to old list.`);
       } else {
         console.log('No new unique cats found after maximum attempts');
       }
@@ -94,13 +99,15 @@ export default function useCatsList() {
 
   let selectedCat = {} as Cat;
   if (selectedCatId) {
-    selectedCat = allCats.find((cat) => cat.id === selectedCatId) as Cat;
+    selectedCat = [...newCats, ...oldCats].find((cat) => cat.id === selectedCatId) as Cat;
   }
 
   return {
-    cats: allCats,
-    isLoading: isGetRandomCatsLoading || isLoadingMore || maxAttemptsReached,
+    newCats,
+    oldCats,
+    isLoading: isGetRandomCatsLoading || isLoadingMore,
     error,
+    maxAttemptsReached,
     closeCatModal,
     openCatModal,
     selectedCatId,

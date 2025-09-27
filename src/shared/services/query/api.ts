@@ -5,8 +5,8 @@ import { axiosBaseQuery } from './config';
 import type { BaseErrorKey, ErrorWithResponse, ErrorWithoutResponse, Error, Meta } from './config';
 import baseQueryWithZodValidation from './zod-validation-enhancer';
 
-// Zod schemas for The Cat API responses
-const catImageSchema = z.object({
+// move these to a DTO folder?
+ const catImageSchema = z.object({
   id: z.string(),
   url: z.string(),
   width: z.number(),
@@ -44,7 +44,7 @@ export type CatBreed = z.infer<typeof catBreedSchema>;
 export type Cat = z.infer<typeof catSchema>;
 export type FavoriteCat = z.infer<typeof favoriteCatSchema>;
 
-export type CatApiErrorKey = BaseErrorKey ;
+export type CatApiErrorKey = BaseErrorKey;
 
 const api = createApi({
   reducerPath: 'api',
@@ -59,21 +59,19 @@ const api = createApi({
           limit,
           has_breeds: 1, // Include breed information
         },
+        dataSchema: z.array(catSchema),
       }),
       providesTags: ['Cats'],
-      extraOptions: {
-        dataSchema: z.array(catSchema),
-      },
       transformErrorResponse(baseQueryReturnValue, meta?: Meta): Error<CatApiErrorKey> {
         if (meta === undefined || !meta.hasResponse) {
           return baseQueryReturnValue as ErrorWithoutResponse<CatApiErrorKey>;
         }
         const error = baseQueryReturnValue as ErrorWithResponse<CatApiErrorKey>;
         if (error.status === 401) {
-          return { ...error, key: 'invalidApiKey' as CatApiErrorKey };
+          return { ...error, key: 'invalidApiKey' };
         }
         if (error.status === 429) {
-          return { ...error, key: 'rateLimited' as CatApiErrorKey };
+          return { ...error, key: 'rateLimited' };
         }
         return error;
       },
@@ -133,7 +131,7 @@ const api = createApi({
         method: 'POST',
         body: {
           image_id: imageId,
-          sub_id: 'cat-app-user', // You can make this dynamic
+          sub_id: 'cat-app-user', // to make it dynamic?
         },
       }),
       invalidatesTags: ['Favorites'],
@@ -150,7 +148,7 @@ const api = createApi({
     // Guest user preferences (stored locally)
     getGuestPreferences: builder.query<{ favoriteBreeds: string[]; lastViewedCats: string[] }, void>({
       query: () => ({
-        url: '/guest/preferences', // This would be a local storage endpoint
+        url: '/guest/preferences', // to make it a local storage endpoint?
         method: 'GET',
       }),
       providesTags: ['Guest'],

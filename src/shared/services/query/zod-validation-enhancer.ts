@@ -1,34 +1,34 @@
 import { z } from 'zod';
 import { type BaseQueryFn } from '@reduxjs/toolkit/query';
-import type { Error, Meta } from './config';
+import type { Error } from './config';
 
-// Enhanced base query with Zod validation
+// only validates API responses
 export default function baseQueryWithZodValidation<TArgs, TResult, TError = Error>(
   baseQuery: BaseQueryFn<TArgs, TResult, TError>
-): BaseQueryFn<TArgs & { extraOptions?: { dataSchema?: z.ZodSchema } }, TResult, TError> {
+): BaseQueryFn<TArgs & { dataSchema?: z.ZodSchema }, TResult, TError> {
   return async (args, api, extraOptions) => {
-    const { extraOptions: zodOptions, ...baseArgs } = args;
+    const { dataSchema, ...baseArgs } = args as TArgs & { dataSchema?: z.ZodSchema };
     
-    const result = await baseQuery(baseArgs, api, extraOptions);
+    const result = await baseQuery(baseArgs as TArgs, api, extraOptions);
     
     // If there's an error, return it as-is
     if ('error' in result) {
       return result;
     }
     
-    // If we have a schema and data, validate it
-    if (zodOptions?.dataSchema && 'data' in result) {
+    // Validate response data if schema provided
+    if (dataSchema && 'data' in result) {
       try {
-        const validatedData = zodOptions.dataSchema.parse(result.data);
-        return { data: validatedData };
+        const validatedData = dataSchema.parse(result.data);
+        return { data: validatedData as TResult };
       } catch (error) {
         if (error instanceof z.ZodError) {
           return {
             error: {
               status: 'PARSING_ERROR' as const,
-              error: `Validation failed: ${error.errors.map(e => e.message).join(', ')}`,
+              error: `Validation failed: ${error.issues.map(e => e.message).join(', ')}`,
               key: 'unknown' as const,
-            },
+            } as TError,
           };
         }
         throw error;

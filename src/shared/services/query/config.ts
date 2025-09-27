@@ -2,7 +2,7 @@ import { type AxiosRequestConfig } from 'axios';
 import { type BaseQueryFn } from '@reduxjs/toolkit/query';
 
 // Base error types
-export type BaseErrorKey = 'networkError' | 'timeout' | 'unknown';
+export type BaseErrorKey = 'networkError' | 'timeout' | 'unknown' | 'invalidApiKey' | 'rateLimited';
 
 export interface ErrorWithResponse<TKey extends BaseErrorKey = BaseErrorKey> {
   status: number;
@@ -46,7 +46,7 @@ export const axiosBaseQuery: BaseQueryFn<
       data,
       params,
       headers: {
-        'x-api-key': import.meta.env.VITE_API_KEY || '', // Add your API key here
+        'x-api-key': import.meta.env.VITE_API_KEY || '', 
         ...headers,
       },
       signal,

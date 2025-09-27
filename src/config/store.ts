@@ -7,9 +7,9 @@ import storage from 'redux-persist/lib/storage';
 import  {logger as reduxLogger } from 'redux-logger';
 
 
-// import appReducer from '../shared/reducers/app.reducer';
-// import loadingReducer from '../shared/reducers/loading.reducer';
-// import catsReducer from '../shared/reducers/cats.reducer'; // New reducer for cat data
+import appReducer from '../shared/reducers/app.reducer';
+import loadingReducer from '../shared/reducers/loading.reducer';
+import catsReducer from '../shared/reducers/cats.reducer';
 import api from '../shared/services/query/api';
 
 //  persistence config - only persist app state and cat data
@@ -17,7 +17,7 @@ const rootPersistConfig = {
   key: 'root',
   storage,
   whitelist: ['app', 'cats'], // Persist app settings and cached cat data
-  blacklist: [api.reducerPath, 'loading'], // Don't persist API cache or loading states
+  blacklist: [api.reducerPath, 'loading'], // Don't persist API cache or loading states, maybe add loading to whitelist? i dont know
 };
 
 export const rootReducer = persistReducer(
@@ -25,7 +25,7 @@ export const rootReducer = persistReducer(
   combineReducers({
     app: appReducer,
     loading: loadingReducer,
-    cats: catsReducer, // New reducer for managing cat data
+    cats: catsReducer, 
     [api.reducerPath]: api.reducer,
   })
 );

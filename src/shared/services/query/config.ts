@@ -40,8 +40,11 @@ export const axiosBaseQuery: BaseQueryFn<
     // Import axios dynamically to avoid circular dependencies
     const axios = (await import('axios')).default;
     
+    //later make some url is always provided
+    const baseURL = import.meta.env.VITE_API_URL || 'https://api.thecatapi.com';
+    
     const result = await axios({
-      url,
+      url: `${baseURL}${url}`,
       method,
       data,
       params,

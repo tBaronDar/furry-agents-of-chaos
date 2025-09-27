@@ -81,22 +81,18 @@ const api = createApi({
     getCatById: builder.query<Cat, { id: string }>({
       query: ({ id }) => ({
         url: `/v1/images/${id}`,
+        dataSchema: catSchema,
       }),
       providesTags: ['Cats'],
-      extraOptions: {
-        dataSchema: catSchema,
-      },
     }),
 
     // Get cat breeds
     getCatBreeds: builder.query<CatBreed[], void>({
       query: () => ({
         url: '/v1/breeds',
+        dataSchema: z.array(catBreedSchema),
       }),
       providesTags: ['Cats'],
-      extraOptions: {
-        dataSchema: z.array(catBreedSchema),
-      },
     }),
 
     // Search cats by breed
@@ -107,22 +103,18 @@ const api = createApi({
           breed_ids: breedId,
           limit,
         },
+        dataSchema: z.array(catSchema),
       }),
       providesTags: ['Cats'],
-      extraOptions: {
-        dataSchema: z.array(catSchema),
-      },
     }),
 
     // Favorites management
     getFavorites: builder.query<FavoriteCat[], void>({
       query: () => ({
         url: '/v1/favourites',
+        dataSchema: z.array(favoriteCatSchema),
       }),
       providesTags: ['Favorites'],
-      extraOptions: {
-        dataSchema: z.array(favoriteCatSchema),
-      },
     }),
 
     addToFavorites: builder.mutation<{ message: string; id: number }, { imageId: string }>({
@@ -145,23 +137,6 @@ const api = createApi({
       invalidatesTags: ['Favorites'],
     }),
 
-    // Guest user preferences (stored locally)
-    getGuestPreferences: builder.query<{ favoriteBreeds: string[]; lastViewedCats: string[] }, void>({
-      query: () => ({
-        url: '/guest/preferences', // to make it a local storage endpoint?
-        method: 'GET',
-      }),
-      providesTags: ['Guest'],
-    }),
-
-    updateGuestPreferences: builder.mutation<void, { favoriteBreeds?: string[]; lastViewedCats?: string[] }>({
-      query: (preferences) => ({
-        url: '/guest/preferences',
-        method: 'POST',
-        body: preferences,
-      }),
-      invalidatesTags: ['Guest'],
-    }),
   }),
 });
 

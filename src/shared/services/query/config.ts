@@ -1,14 +1,14 @@
-import { type AxiosRequestConfig } from 'axios';
+import { type AxiosRequestConfig, type AxiosError } from 'axios';
 import { type BaseQueryFn } from '@reduxjs/toolkit/query';
 
 // Base error types
 export type BaseErrorKey = 'networkError' | 'timeout' | 'unknown' | 'invalidApiKey' | 'rateLimited';
 
-export interface ErrorWithResponse<TKey extends BaseErrorKey = BaseErrorKey> {
+export type ErrorWithResponse<ErrorKey = BaseErrorKey, Data = unknown> = {
   status: number;
-  data: any;
-  key: TKey;
-}
+  data: Data;
+  key: ErrorKey;
+};
 
 export interface ErrorWithoutResponse<TKey extends BaseErrorKey = BaseErrorKey> {
   status: 'FETCH_ERROR' | 'PARSING_ERROR' | 'TIMEOUT_ERROR' | 'CUSTOM_ERROR';
@@ -27,8 +27,8 @@ export const axiosBaseQuery: BaseQueryFn<
   {
     url: string;
     method?: AxiosRequestConfig['method'];
-    data?: AxiosRequestConfig['data'];
-    params?: AxiosRequestConfig['params'];
+    data?: Record<string, unknown>;
+    params?: Record<string, unknown>;
     headers?: AxiosRequestConfig['headers'];
   },
   unknown,
@@ -39,7 +39,7 @@ export const axiosBaseQuery: BaseQueryFn<
     const axios = (await import('axios')).default;
 
     //later make some url is always provided
-    const baseURL = import.meta.env.VITE_API_URL || 'https://api.thecatapi.com';
+    const baseURL = (import.meta.env.VITE_API_URL as string) || 'https://api.thecatapi.com';
 
     const result = await axios({
       url: `${baseURL}${url}`,
@@ -47,24 +47,26 @@ export const axiosBaseQuery: BaseQueryFn<
       data,
       params,
       headers: {
-        'x-api-key': import.meta.env.VITE_API_KEY || '',
+        'x-api-key': (import.meta.env.VITE_API_KEY as string) || '',
         ...headers,
       },
       signal,
     });
 
     return { data: result.data };
-  } catch (axiosError: any) {
-    if (axiosError.response) {
+  } catch (axiosError: unknown) {
+    const error = axiosError as AxiosError;
+
+    if (error.response) {
       // Server responded with error status
       return {
         error: {
-          status: axiosError.response.status,
-          data: axiosError.response.data,
+          status: error.response.status,
+          data: error.response.data,
           key: 'unknown' as BaseErrorKey,
         },
       };
-    } else if (axiosError.request) {
+    } else if (error.request) {
       // Network error
       return {
         error: {
@@ -78,7 +80,7 @@ export const axiosBaseQuery: BaseQueryFn<
       return {
         error: {
           status: 'CUSTOM_ERROR' as const,
-          error: axiosError.message,
+          error: error.message || 'Unknown error occurred',
           key: 'unknown' as BaseErrorKey,
         },
       };

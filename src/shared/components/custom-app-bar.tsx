@@ -19,7 +19,7 @@ export default function CustomAppBar() {
       <Toolbar>
         <Pets sx={{ mr: 2 }} />
         <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-          Agents of Chaos
+          Furry Agents of Chaos(or FAC)
         </Typography>
         <Stack direction='row' spacing={2}>
           <Link component={RouterLink} to='/' sx={linkStyles}>

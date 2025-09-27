@@ -5,10 +5,11 @@ import type { Cat } from '../../../shared/dto/cat-read';
 type CatsListProps = {
   cats: Array<Cat>;
   openCatModal: (id: string) => void;
+  isLoading: boolean;
 };
 
 export default function CatsList(props: CatsListProps) {
-  const { cats, openCatModal } = props;
+  const { cats, openCatModal, isLoading } = props;
 
   return (
     <Stack
@@ -20,7 +21,7 @@ export default function CatsList(props: CatsListProps) {
         padding: '8px',
       }}>
       {cats.map((cat) => (
-        <CatCard key={cat.id} cat={cat} openCatModal={openCatModal} />
+        <CatCard key={cat.id} cat={cat} openCatModal={openCatModal} isLoading={isLoading} />
       ))}
     </Stack>
   );

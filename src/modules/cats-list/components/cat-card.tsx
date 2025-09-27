@@ -1,14 +1,16 @@
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import type { Cat } from '../../../shared/dto/cat-read';
+import Skeleton from '@mui/material/Skeleton';
 
 type CatCardProps = {
   cat: Cat;
   openCatModal: (id: string) => void;
+  isLoading: boolean;
 };
 
 export default function CatCard(props: CatCardProps) {
-  const { cat, openCatModal } = props;
+  const { cat, openCatModal, isLoading } = props;
 
   const handleClick = () => {
     openCatModal(cat.id);
@@ -27,16 +29,20 @@ export default function CatCard(props: CatCardProps) {
         overflow: 'hidden',
       }}
       onClick={handleClick}>
-      <CardMedia
-        component='img'
-        height='200'
-        image={cat.url}
-        alt={`Cat ${cat.id}`}
-        sx={{
-          objectFit: 'cover',
-          width: '100%',
-        }}
-      />
+      {isLoading ? (
+        <Skeleton variant='rectangular' height='200' />
+      ) : (
+        <CardMedia
+          component='img'
+          height='200'
+          image={cat.url}
+          alt={`Cat ${cat.id}`}
+          sx={{
+            objectFit: 'cover',
+            width: '100%',
+          }}
+        />
+      )}
     </Card>
   );
 }

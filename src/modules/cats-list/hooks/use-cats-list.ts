@@ -5,6 +5,11 @@ import type { RootState } from '../../../config/store';
 import { ModalType } from '../../../shared/utils/enums';
 import type { Cat } from '../../../shared/dto/cat-read';
 import { useState, useEffect, useCallback } from 'react';
+import {
+  setInitialLoading,
+  setFetchingMoreCats,
+  setMaxAttemptsReached,
+} from '../../../shared/reducers/loading.reducer';
 
 export default function useCatsList() {
   const dispatch = useDispatch();
@@ -12,11 +17,12 @@ export default function useCatsList() {
 
   const [newCats, setNewCats] = useState<Array<Cat>>([]);
   const [oldCats, setOldCats] = useState<Array<Cat>>([]);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [maxAttemptsReached, setMaxAttemptsReached] = useState(false);
 
   const { data, isLoading: isGetRandomCatsLoading, error, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
+  useEffect(() => {
+    dispatch(setInitialLoading(isGetRandomCatsLoading));
+  }, [isGetRandomCatsLoading, dispatch]);
   // update newCats when initial data arrives
   useEffect(() => {
     if (data && newCats.length === 0) {
@@ -41,9 +47,9 @@ export default function useCatsList() {
 
   //handlers
   const handleGetMoreCats = async () => {
-    if (isGetRandomCatsLoading || isLoadingMore) return;
+    if (isGetRandomCatsLoading) return;
 
-    setIsLoadingMore(true);
+    dispatch(setFetchingMoreCats(true));
 
     try {
       const existingCatIds = new Set([...newCats, ...oldCats].map((cat) => cat.id));
@@ -76,7 +82,7 @@ export default function useCatsList() {
 
         // there is no exlude ids on the api so we need to check if we are getting unique cats
         if (attempts > 5 && uniqueCats.length === 0) {
-          setMaxAttemptsReached(true);
+          dispatch(setMaxAttemptsReached(true));
           console.warn('No unique cats found in recent attempts. API might be rate limited or out of unique cats.');
           break;
         }
@@ -93,7 +99,7 @@ export default function useCatsList() {
     } catch (fetchError) {
       console.error('Error fetching more cats:', fetchError);
     } finally {
-      setIsLoadingMore(false);
+      dispatch(setFetchingMoreCats(false));
     }
   };
 
@@ -105,9 +111,7 @@ export default function useCatsList() {
   return {
     newCats,
     oldCats,
-    isLoading: isGetRandomCatsLoading || isLoadingMore,
     error,
-    maxAttemptsReached,
     closeCatModal,
     openCatModal,
     selectedCatId,

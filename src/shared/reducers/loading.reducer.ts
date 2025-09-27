@@ -1,29 +1,37 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 interface LoadingState {
-  isLoading: boolean;
-  loadingMessage: string | null;
+  isInitialLoading: boolean;
+  isFetchingMoreCats: boolean;
+  maxAttemptsReached: boolean;
 }
 
 const initialState: LoadingState = {
-  isLoading: false,
-  loadingMessage: null,
+  isInitialLoading: false,
+  isFetchingMoreCats: false,
+  maxAttemptsReached: false,
 };
 
 const loadingSlice = createSlice({
   name: 'loading',
   initialState,
   reducers: {
-    setLoading(state, action: PayloadAction<{ isLoading: boolean; message?: string }>) {
-      state.isLoading = action.payload.isLoading;
-      state.loadingMessage = action.payload.message || null;
+    setInitialLoading(state, action: PayloadAction<boolean>) {
+      state.isInitialLoading = action.payload;
     },
-    clearLoading(state) {
-      state.isLoading = false;
-      state.loadingMessage = null;
+    setFetchingMoreCats(state, action: PayloadAction<boolean>) {
+      state.isFetchingMoreCats = action.payload;
+    },
+    setMaxAttemptsReached(state, action: PayloadAction<boolean>) {
+      state.maxAttemptsReached = action.payload;
+    },
+    clearAllLoading(state) {
+      state.isInitialLoading = false;
+      state.isFetchingMoreCats = false;
+      state.maxAttemptsReached = false;
     },
   },
 });
 
-export const { setLoading, clearLoading } = loadingSlice.actions;
+export const { setInitialLoading, setFetchingMoreCats, setMaxAttemptsReached, clearAllLoading } = loadingSlice.actions;
 export default loadingSlice.reducer;

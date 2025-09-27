@@ -18,22 +18,15 @@ export type CatsListProps = {
   selectedCatId: string | null;
   selectedCat: Cat;
   handleGetMoreCats: () => void;
-  maxAttemptsReached: boolean;
 };
 
 const CatsPageInner = (props: CatsListProps) => {
-  const {
-    newCats,
-    oldCats,
-    selectedCatId,
-    selectedCat,
-    closeCatModal,
-    openCatModal,
-    handleGetMoreCats,
-    maxAttemptsReached,
-  } = props;
+  const { newCats, oldCats, selectedCatId, selectedCat, closeCatModal, openCatModal, handleGetMoreCats } = props;
   console.log('selectedCatId', selectedCatId);
-  const isFetchTenCatsLoading = useSelector((state: RootState) => state.loading.isLoading);
+
+  const isInitialLoading = useSelector((state: RootState) => state.loading.isInitialLoading);
+  const isFetchingMoreCats = useSelector((state: RootState) => state.loading.isFetchingMoreCats);
+  const maxAttemptsReached = useSelector((state: RootState) => state.loading.maxAttemptsReached);
 
   return (
     <>
@@ -72,22 +65,22 @@ const CatsPageInner = (props: CatsListProps) => {
             variant='contained'
             color='primary'
             onClick={() => handleGetMoreCats()}
-            disabled={isFetchTenCatsLoading || maxAttemptsReached}>
-            More Agents
+            disabled={isFetchingMoreCats || maxAttemptsReached}>
+            {isFetchingMoreCats ? 'Loading...' : 'More Agents'}
           </Button>
         </Stack>
         <Stack>
           <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 2, mb: 1 }}>
             🆕 New Agents ({newCats.length})
           </Typography>
-          <CatsList cats={newCats} openCatModal={openCatModal} />
+          <CatsList cats={newCats} openCatModal={openCatModal} isLoading={isInitialLoading || isFetchingMoreCats} />
 
           {oldCats.length > 0 && (
             <>
               <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 3, mb: 1 }}>
                 📚 Previous Agents ({oldCats.length})
               </Typography>
-              <CatsList cats={oldCats} openCatModal={openCatModal} />
+              <CatsList cats={oldCats} openCatModal={openCatModal} isLoading={false} />
             </>
           )}
         </Stack>
@@ -97,16 +90,8 @@ const CatsPageInner = (props: CatsListProps) => {
 };
 
 const CatsPage: React.FC = () => {
-  const {
-    newCats,
-    oldCats,
-    closeCatModal,
-    openCatModal,
-    selectedCatId,
-    selectedCat,
-    handleGetMoreCats,
-    maxAttemptsReached,
-  } = useCatsList();
+  const { newCats, oldCats, closeCatModal, openCatModal, selectedCatId, selectedCat, handleGetMoreCats } =
+    useCatsList();
 
   return (
     <CatsPageInner
@@ -117,7 +102,6 @@ const CatsPage: React.FC = () => {
       selectedCatId={selectedCatId}
       selectedCat={selectedCat}
       handleGetMoreCats={handleGetMoreCats}
-      maxAttemptsReached={maxAttemptsReached}
     />
   );
 };

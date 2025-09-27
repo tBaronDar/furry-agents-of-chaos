@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import useCatsList from './hooks/use-cats-list';
 import { type Cat } from '../../shared/dto/cat-read';
 import CatCard from './components/cat-card';
-import CatModal from '../../shared/components/cat-modal/cat-modal';
+import CatModal from '../../shared/components/modals/cat-modal';
 
 export type CatsListProps = {
   cats: Array<Cat>;

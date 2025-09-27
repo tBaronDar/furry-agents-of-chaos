@@ -7,7 +7,7 @@ const Layout = lazy(() => import('../shared/components/main-layout'));
 const CatsList = lazy(() => import('../modules/cats-list/cats-list'));
 const BreedsList = lazy(() => import('../modules/breeds-list/breeds-list'));
 const Favorites = lazy(() => import('../modules/favorites/favorites'));
-const BreedModal = lazy(() => import('../shared/components/breed-modal/breed-modal'));
+const BreedModal = lazy(() => import('../shared/components/modals/breed-modal'));
 const About = lazy(() => import('../modules/about/about')); //not really a module, but i'll leave it here for now
 
 //do i need the store here? we'll see

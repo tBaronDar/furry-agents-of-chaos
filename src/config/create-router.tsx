@@ -7,7 +7,6 @@ const Layout = lazy(() => import('../shared/components/main-layout'));
 const CatsList = lazy(() => import('../modules/cats-list/cats-list'));
 const BreedsList = lazy(() => import('../modules/breeds-list/breeds-list'));
 const Favorites = lazy(() => import('../modules/favorites/favorites'));
-const CatModal = lazy(() => import('../shared/components/cat-modal/cat-modal'));
 const BreedModal = lazy(() => import('../shared/components/breed-modal/breed-modal'));
 const About = lazy(() => import('../modules/about/about')); //not really a module, but i'll leave it here for now
 
@@ -29,10 +28,6 @@ export default function router(_store: AppStore) {
         {
           path: 'favorites',
           element: <Favorites />,
-        },
-        {
-          path: 'cat/:id',
-          element: <CatModal />,
         },
         {
           path: 'breed/:id',

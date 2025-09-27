@@ -2,21 +2,18 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
 import useCatsList from './hooks/use-cats-list';
 import { type Cat } from '../../shared/dto/cat-read';
 import CatCard from './components/cat-card';
+import CatModal from '../../shared/components/cat-modal/cat-modal';
 
 export type CatsListProps = {
   cats: Array<Cat>;
   isLoading: boolean;
-  isModalOpen: boolean;
   closeCatModal: () => void;
   openCatModal: (id: string) => void;
+  selectedCatId: string | null;
+  selectedCat: Cat;
 };
 
 const CatsListSkeleton = () => {
@@ -30,20 +27,12 @@ const CatsListSkeleton = () => {
 };
 
 const CatsListInner = (props: CatsListProps) => {
-  const { cats, isModalOpen, closeCatModal, openCatModal } = props;
+  const { cats, selectedCatId, selectedCat, closeCatModal, openCatModal } = props;
+  console.log('selectedCatId', selectedCatId);
+
   return (
     <>
-      <Dialog open={isModalOpen} onClose={() => closeCatModal()}>
-        <DialogTitle>Cat Details</DialogTitle>
-        <DialogContent>
-          <Typography variant='body1' color='text.secondary'>
-            Cat details modal will be implemented here.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => closeCatModal()}>Close</Button>
-        </DialogActions>
-      </Dialog>
+      <CatModal selectedCatId={selectedCatId} selectedCat={selectedCat} closeCatModal={closeCatModal} />
 
       <Stack>
         <Box>
@@ -65,7 +54,7 @@ const CatsListInner = (props: CatsListProps) => {
 };
 
 const CatsList: React.FC = () => {
-  const { cats, isLoading, isModalOpen, closeCatModal, openCatModal } = useCatsList();
+  const { cats, isLoading, closeCatModal, openCatModal, selectedCatId, selectedCat } = useCatsList();
 
   return isLoading ? (
     <CatsListSkeleton />
@@ -73,9 +62,10 @@ const CatsList: React.FC = () => {
     <CatsListInner
       cats={cats}
       isLoading={isLoading}
-      isModalOpen={isModalOpen}
       closeCatModal={closeCatModal}
       openCatModal={openCatModal}
+      selectedCatId={selectedCatId}
+      selectedCat={selectedCat}
     />
   );
 };

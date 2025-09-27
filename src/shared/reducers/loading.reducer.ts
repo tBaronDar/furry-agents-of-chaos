@@ -14,11 +14,11 @@ const loadingSlice = createSlice({
   name: 'loading',
   initialState,
   reducers: {
-    setLoading: (state, action: PayloadAction<{ isLoading: boolean; message?: string }>) => {
+    setLoading(state, action: PayloadAction<{ isLoading: boolean; message?: string }>) {
       state.isLoading = action.payload.isLoading;
       state.loadingMessage = action.payload.message || null;
     },
-    clearLoading: (state) => {
+    clearLoading(state) {
       state.isLoading = false;
       state.loadingMessage = null;
     },

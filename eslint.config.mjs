@@ -99,10 +99,9 @@ export default [
         node: {
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
-        alias: {
-          // Allow ESLint to recognize Vite imports.
-          map: [['', './public']],
-          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        typescript: {
+          alwaysTryTypes: true,
+          project: ['./tsconfig.json', './tsconfig.app.json', './tsconfig.node.json'],
         },
       },
     },
@@ -145,6 +144,11 @@ export default [
 
       'no-nested-ternary': ['off'],
       'no-console': ['off'],
+
+      // TypeScript rules - relaxed for development
+      '@typescript-eslint/no-explicit-any': ['warn'],
+      '@typescript-eslint/no-unsafe-assignment': ['warn'],
+      '@typescript-eslint/no-unsafe-member-access': ['warn'],
 
       'no-param-reassign': [
         'warn',

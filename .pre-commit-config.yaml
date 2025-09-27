@@ -1,0 +1,26 @@
+repos:
+  - repo: local
+    hooks:
+      - id: tsc
+        name: TypeScript Compile Check
+        entry: bash
+        args: ['-c', 'npm run typecheck']
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: eslint
+        name: ESLint
+        entry: bash
+        args: ['-c', 'npx eslint --fix --max-warnings 20']
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: prettier
+        name: Prettier
+        entry: bash
+        args: ['-c', 'npx prettier --write .']
+        language: system
+        pass_filenames: false
+        always_run: true

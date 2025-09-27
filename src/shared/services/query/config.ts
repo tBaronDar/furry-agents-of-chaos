@@ -16,9 +16,7 @@ export interface ErrorWithoutResponse<TKey extends BaseErrorKey = BaseErrorKey> 
   key: TKey;
 }
 
-export type Error<TKey extends BaseErrorKey = BaseErrorKey> = 
-  | ErrorWithResponse<TKey> 
-  | ErrorWithoutResponse<TKey>;
+export type Error<TKey extends BaseErrorKey = BaseErrorKey> = ErrorWithResponse<TKey> | ErrorWithoutResponse<TKey>;
 
 export interface Meta {
   hasResponse: boolean;
@@ -39,17 +37,17 @@ export const axiosBaseQuery: BaseQueryFn<
   try {
     // Import axios dynamically to avoid circular dependencies
     const axios = (await import('axios')).default;
-    
+
     //later make some url is always provided
     const baseURL = import.meta.env.VITE_API_URL || 'https://api.thecatapi.com';
-    
+
     const result = await axios({
       url: `${baseURL}${url}`,
       method,
       data,
       params,
       headers: {
-        'x-api-key': import.meta.env.VITE_API_KEY || '', 
+        'x-api-key': import.meta.env.VITE_API_KEY || '',
         ...headers,
       },
       signal,

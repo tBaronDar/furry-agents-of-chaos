@@ -4,8 +4,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import { type TypedUseSelectorHook, useDispatch, useSelector, useStore } from 'react-redux';
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import  {logger as reduxLogger } from 'redux-logger';
-
+import { logger as reduxLogger } from 'redux-logger';
 
 import appReducer from '../shared/reducers/app.reducer';
 import loadingReducer from '../shared/reducers/loading.reducer';
@@ -25,7 +24,7 @@ export const rootReducer = persistReducer(
   combineReducers({
     app: appReducer,
     loading: loadingReducer,
-    cats: catsReducer, 
+    cats: catsReducer,
     [api.reducerPath]: api.reducer,
   })
 );

@@ -20,18 +20,18 @@ const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setTheme: (state, action: PayloadAction<'light' | 'dark'>) => {
+    setTheme(state, action: PayloadAction<'light' | 'dark'>) {
       state.theme = action.payload;
     },
-    setGuestId: (state, action: PayloadAction<string>) => {
+    setGuestId(state, action: PayloadAction<string>) {
       state.guestId = action.payload;
     },
-    openModal: (state, action: PayloadAction<{ type: 'cat' | 'breed'; id: string }>) => {
+    openModal(state, action: PayloadAction<{ type: 'cat' | 'breed'; id: string }>) {
       state.isModalOpen = true;
       state.currentModal = action.payload.type;
       state.currentModalId = action.payload.id;
     },
-    closeModal: (state) => {
+    closeModal(state) {
       state.isModalOpen = false;
       state.currentModal = null;
       state.currentModalId = null;

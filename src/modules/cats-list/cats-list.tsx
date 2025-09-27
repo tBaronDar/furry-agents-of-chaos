@@ -7,11 +7,11 @@ const CatsList: React.FC = () => {
   console.log(data, isLoading, error);
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant='h4' component='h1' gutterBottom>
         Random Cats
       </Typography>
-      <Typography variant="body1" color="text.secondary">
-        Welcome to CatLover! Here you'll see random cat images.
+      <Typography variant='body1' color='text.secondary'>
+        Welcome to CatLover! Here you&apos;ll see random cat images.
       </Typography>
     </Box>
   );

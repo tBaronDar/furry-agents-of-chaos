@@ -25,6 +25,14 @@ export type CustomAppBarProps = {
 export default function CustomAppBar(props: CustomAppBarProps) {
   const { guest } = props;
   const dispatch = useDispatch();
+  const handleLogout = () => {
+    const result = confirm(
+      'If you do this, you will lose your current roster of furry rascals.\nThis action cannot be undone.'
+    );
+    if (result) {
+      dispatch(setGuest(createInitialGuest()));
+    }
+  };
   return (
     <AppBar position='static'>
       <Toolbar>
@@ -39,7 +47,7 @@ export default function CustomAppBar(props: CustomAppBarProps) {
               <Typography variant='body1' sx={{ mr: 2 }}>
                 Welcome, {guest.guestName}!
               </Typography>
-              <IconButton onClick={() => dispatch(setGuest(createInitialGuest()))}>
+              <IconButton onClick={handleLogout}>
                 <Logout sx={{ color: 'white' }} />
               </IconButton>
             </Stack>

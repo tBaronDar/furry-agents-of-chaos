@@ -10,7 +10,7 @@ interface AppState {
   selectedCatId: string | null;
 }
 
-const createInitialGuest = (): Guest => ({
+export const createInitialGuest = (): Guest => ({
   id: `guest_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
   guestName: '',
   favoriteCatsIds: [],

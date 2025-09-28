@@ -24,8 +24,8 @@ export default function useCatsList() {
   const { data, isLoading: isGetRandomCatsLoading, error, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
   const mappedData = useMemo(() => {
-    return data?.map(mapCatReadToCat);
-  }, [data]);
+    return data?.map((catRead) => mapCatReadToCat(catRead, guest?.favoriteCatsIds || []));
+  }, [data, guest?.favoriteCatsIds]);
 
   useEffect(() => {
     dispatch(setInitialLoading(isGetRandomCatsLoading));
@@ -37,6 +37,20 @@ export default function useCatsList() {
       dispatch(ensureGuestExists());
     }
   }, [guest, dispatch]);
+
+  // Update cats favorite status when guest favorites change
+  useEffect(() => {
+    if (guest?.guestName && guest.favoriteCatsIds.length >= 0) {
+      const updateCatsWithFavorites = (cats: Array<Cat>) =>
+        cats.map((cat) => ({
+          ...cat,
+          isFavorite: guest.favoriteCatsIds.includes(cat.id),
+        }));
+
+      setNewCats((prev) => updateCatsWithFavorites(prev));
+      setOldCats((prev) => updateCatsWithFavorites(prev));
+    }
+  }, [guest?.favoriteCatsIds, guest?.guestName]);
 
   // update newCats when initial data arrives
   useEffect(() => {
@@ -86,7 +100,7 @@ export default function useCatsList() {
         }
 
         const fetchedCats = await fetchUniqueCats();
-        const mappedFetchedCats = fetchedCats.map(mapCatReadToCat);
+        const mappedFetchedCats = fetchedCats.map((catRead) => mapCatReadToCat(catRead, guest?.favoriteCatsIds || []));
         const uniqueCats = mappedFetchedCats.filter((cat) => !existingCatIds.has(cat.id));
         freshCats.push(...uniqueCats);
         uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
@@ -107,7 +121,7 @@ export default function useCatsList() {
       if (freshCats.length > 0) {
         // Move current new cats to old cats, then set fresh cats as new cats
         setOldCats((prev) => [...newCats, ...prev]);
-        setNewCats(freshCats.map(mapCatReadToCat));
+        setNewCats(freshCats.map((catRead) => mapCatReadToCat(catRead, guest?.favoriteCatsIds || [])));
         console.log(`Successfully added ${freshCats.length} new cats. Moved ${newCats.length} cats to old list.`);
       } else {
         console.log('No new unique cats found after maximum attempts');

@@ -13,7 +13,8 @@ import type { CatBreed } from '../../../dto/cat-breed-read';
 import HeartIcon from '@mui/icons-material/Favorite';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addToFavorites as addToFavoritesAction } from '../../../reducers/cats.reducer';
+import { setCatFavorite } from '../../../reducers/cats.reducer';
+import { toggleCatFavorite } from '../../../reducers/app.reducer';
 
 export type CatModalProps = {
   selectedCatId: string | null;
@@ -39,7 +40,13 @@ const CatModal = (props: CatModalProps) => {
     if (guest.guestName === '') {
       setShowGuestCard(true);
     } else {
-      dispatch(addToFavoritesAction({ catId, guest }));
+      const isCurrentlyFavorite = guest.favoriteCatsIds.includes(catId);
+      const newFavoriteStatus = !isCurrentlyFavorite;
+
+      // Update guest favorites
+      dispatch(toggleCatFavorite(catId));
+      // Update cached cat's favorite status
+      dispatch(setCatFavorite({ catId, isFavorite: newFavoriteStatus }));
     }
   }
   function handleClose() {
@@ -73,7 +80,7 @@ const CatModal = (props: CatModalProps) => {
           )}
           <Stack sx={{ flexGrow: 1, justifyContent: 'center', position: 'relative' }}>
             {showGuestCard ? (
-              <GuestCard handleClose={handleClose} currentGuest={guest} selectedCatId={selectedCatId} />
+              <GuestCard handleClose={handleClose} currentGuest={guest} selectedCat={selectedCat} />
             ) : (
               <>
                 <CardMedia

@@ -7,14 +7,12 @@ import { mapCatReadToCat } from '../utils/mapper';
 interface CatsState {
   cachedCats: Record<string, Cat>;
   cachedBreeds: Record<string, CatBreed>;
-  favoriteIds: Array<string>;
   lastViewedCats: Array<string>;
 }
 
 const initialState: CatsState = {
   cachedCats: {},
   cachedBreeds: {},
-  favoriteIds: [],
   lastViewedCats: [],
 };
 
@@ -38,26 +36,13 @@ const catsSlice = createSlice({
         state.cachedBreeds[breed.id] = breed;
       });
     },
-    addToFavorites(
-      state,
-      action: PayloadAction<{ catId: string; guest: { guestName: string; favoriteCatsIds: Array<string> } }>
-    ) {
-      const { catId, guest } = action.payload;
+    setCatFavorite(state, action: PayloadAction<{ catId: string; isFavorite: boolean }>) {
+      const { catId, isFavorite } = action.payload;
 
-      // If guest has a name, add to guest's favorites
-      if (guest.guestName !== '') {
-        if (!guest.favoriteCatsIds.includes(catId)) {
-          guest.favoriteCatsIds.push(catId);
-        }
+      // Update cached cat's isFavorite status
+      if (state.cachedCats[catId]) {
+        state.cachedCats[catId].isFavorite = isFavorite;
       }
-
-      // Also add to global favorites
-      if (!state.favoriteIds.includes(catId)) {
-        state.favoriteIds.push(catId);
-      }
-    },
-    removeFromFavorites(state, action: PayloadAction<string>) {
-      state.favoriteIds = state.favoriteIds.filter((id) => id !== action.payload);
     },
     addToLastViewed(state, action: PayloadAction<string>) {
       const catId = action.payload;
@@ -68,21 +53,9 @@ const catsSlice = createSlice({
         state.lastViewedCats = state.lastViewedCats.slice(0, 20);
       }
     },
-    setFavorites(state, action: PayloadAction<Array<string>>) {
-      state.favoriteIds = action.payload;
-    },
   },
 });
 
-export const {
-  cacheCat,
-  cacheCats,
-  cacheBreed,
-  cacheBreeds,
-  addToFavorites,
-  removeFromFavorites,
-  addToLastViewed,
-  setFavorites,
-} = catsSlice.actions;
+export const { cacheCat, cacheCats, cacheBreed, cacheBreeds, setCatFavorite, addToLastViewed } = catsSlice.actions;
 
 export default catsSlice.reducer;

@@ -59,6 +59,18 @@ const appSlice = createSlice({
         state.guest.favoriteCatsIds = state.guest.favoriteCatsIds.filter((id) => id !== action.payload);
       }
     },
+    toggleCatFavorite(state, action: PayloadAction<string>) {
+      if (state.guest && state.guest.guestName !== '') {
+        const catId = action.payload;
+        const isCurrentlyFavorite = state.guest.favoriteCatsIds.includes(catId);
+
+        if (isCurrentlyFavorite) {
+          state.guest.favoriteCatsIds = state.guest.favoriteCatsIds.filter((id) => id !== catId);
+        } else {
+          state.guest.favoriteCatsIds.push(catId);
+        }
+      }
+    },
   },
 });
 
@@ -71,5 +83,6 @@ export const {
   ensureGuestExists,
   addToGuestFavorites,
   removeFromGuestFavorites,
+  toggleCatFavorite,
 } = appSlice.actions;
 export default appSlice.reducer;

@@ -30,6 +30,10 @@ const CatsPageInner = (props: CatsListProps) => {
   const isFetchingMoreCats = useSelector((state: RootState) => state.loading.isFetchingMoreCats);
   const maxAttemptsReached = useSelector((state: RootState) => state.loading.maxAttemptsReached);
 
+  console.log('newCats', newCats);
+  console.log('oldCats', oldCats);
+  console.log('guest', guest);
+
   return (
     <>
       {selectedCat && guest && (
@@ -75,14 +79,14 @@ const CatsPageInner = (props: CatsListProps) => {
         </Stack>
         <Stack>
           <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 2, mb: 1 }}>
-            🆕 New Agents ({newCats.length})
+            New Agents ({newCats.length})
           </Typography>
           <CatsList cats={newCats} openCatModal={openCatModal} isLoading={isInitialLoading || isFetchingMoreCats} />
 
           {oldCats.length > 0 && (
             <>
               <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 3, mb: 1 }}>
-                📚 Previous Agents ({oldCats.length})
+                Previous Agents ({oldCats.length})
               </Typography>
               <CatsList cats={oldCats} openCatModal={openCatModal} isLoading={false} />
             </>

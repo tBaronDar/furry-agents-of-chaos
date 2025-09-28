@@ -9,7 +9,14 @@ export type FavoritesListProps = {
 export default function FavoritesList(props: FavoritesListProps) {
   const { favoriteCats } = props;
   return (
-    <Stack>
+    <Stack
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+        gap: '16px',
+        marginTop: '16px',
+        padding: '8px',
+      }}>
       {favoriteCats.map((fc) => (
         <FavoriteCard key={fc.id} favoriteCat={fc} />
       ))}

@@ -1,5 +1,5 @@
 import api from '../../../shared/services/query/api';
-import { closeModal, openModal, setSelectedCat } from '../../../shared/reducers/app.reducer';
+import { closeModal, openModal, setSelectedCat, ensureGuestExists } from '../../../shared/reducers/app.reducer';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../../config/store';
 import { ModalType } from '../../../shared/utils/enums';
@@ -16,6 +16,7 @@ import { mapCatReadToCat } from '../../../shared/utils/mapper';
 export default function useCatsList() {
   const dispatch = useDispatch();
   const selectedCatId = useSelector((state: RootState) => state.app.selectedCatId);
+  const guest = useSelector((state: RootState) => state.app.guest);
 
   const [newCats, setNewCats] = useState<Array<Cat>>([]);
   const [oldCats, setOldCats] = useState<Array<Cat>>([]);
@@ -29,6 +30,13 @@ export default function useCatsList() {
   useEffect(() => {
     dispatch(setInitialLoading(isGetRandomCatsLoading));
   }, [isGetRandomCatsLoading, dispatch]);
+
+  // Ensure guest exists on mount
+  useEffect(() => {
+    if (!guest) {
+      dispatch(ensureGuestExists());
+    }
+  }, [guest, dispatch]);
 
   // update newCats when initial data arrives
   useEffect(() => {
@@ -125,5 +133,6 @@ export default function useCatsList() {
     selectedCatId,
     selectedCat,
     handleGetMoreCats,
+    guest,
   };
 }

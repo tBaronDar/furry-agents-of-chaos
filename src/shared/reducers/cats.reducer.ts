@@ -38,9 +38,22 @@ const catsSlice = createSlice({
         state.cachedBreeds[breed.id] = breed;
       });
     },
-    addToFavorites(state, action: PayloadAction<string>) {
-      if (!state.favoriteIds.includes(action.payload)) {
-        state.favoriteIds.push(action.payload);
+    addToFavorites(
+      state,
+      action: PayloadAction<{ catId: string; guest: { guestName: string; favoriteCatsIds: Array<string> } }>
+    ) {
+      const { catId, guest } = action.payload;
+
+      // If guest has a name, add to guest's favorites
+      if (guest.guestName !== '') {
+        if (!guest.favoriteCatsIds.includes(catId)) {
+          guest.favoriteCatsIds.push(catId);
+        }
+      }
+
+      // Also add to global favorites
+      if (!state.favoriteIds.includes(catId)) {
+        state.favoriteIds.push(catId);
       }
     },
     removeFromFavorites(state, action: PayloadAction<string>) {

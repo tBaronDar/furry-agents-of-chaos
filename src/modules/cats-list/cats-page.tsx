@@ -4,11 +4,12 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useCatsList from './hooks/use-cats-list';
 import { type Cat } from '../../shared/dto/cat';
-import CatModal from '../../shared/components/modals/cat-modal';
+import CatModal from '../../shared/components/modals/cat-details/cat-modal';
 import Button from '@mui/material/Button';
 import CatsList from './components/cats-list';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../config/store';
+import type { Guest } from '../../shared/dto/guest';
 
 export type CatsListProps = {
   newCats: Array<Cat>;
@@ -18,10 +19,11 @@ export type CatsListProps = {
   selectedCatId: string | null;
   selectedCat: Cat;
   handleGetMoreCats: () => void;
+  guest: Guest;
 };
 
 const CatsPageInner = (props: CatsListProps) => {
-  const { newCats, oldCats, selectedCatId, selectedCat, closeCatModal, openCatModal, handleGetMoreCats } = props;
+  const { newCats, oldCats, selectedCatId, selectedCat, closeCatModal, openCatModal, handleGetMoreCats, guest } = props;
   console.log('selectedCatId', selectedCatId);
 
   const isInitialLoading = useSelector((state: RootState) => state.loading.isInitialLoading);
@@ -30,7 +32,9 @@ const CatsPageInner = (props: CatsListProps) => {
 
   return (
     <>
-      <CatModal selectedCatId={selectedCatId} selectedCat={selectedCat} closeCatModal={closeCatModal} />
+      {selectedCat && guest && (
+        <CatModal selectedCatId={selectedCatId} selectedCat={selectedCat} closeCatModal={closeCatModal} guest={guest} />
+      )}
 
       <Stack
         sx={{
@@ -90,7 +94,7 @@ const CatsPageInner = (props: CatsListProps) => {
 };
 
 const CatsPage: React.FC = () => {
-  const { newCats, oldCats, closeCatModal, openCatModal, selectedCatId, selectedCat, handleGetMoreCats } =
+  const { newCats, oldCats, closeCatModal, openCatModal, selectedCatId, selectedCat, handleGetMoreCats, guest } =
     useCatsList();
 
   return (
@@ -102,6 +106,7 @@ const CatsPage: React.FC = () => {
       selectedCatId={selectedCatId}
       selectedCat={selectedCat}
       handleGetMoreCats={handleGetMoreCats}
+      guest={guest}
     />
   );
 };

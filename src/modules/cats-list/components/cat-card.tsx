@@ -2,7 +2,8 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import type { Cat } from '../../../shared/dto/cat';
 import Skeleton from '@mui/material/Skeleton';
-
+import CardContent from '@mui/material/CardContent';
+import HeartIcon from '@mui/icons-material/Favorite';
 type CatCardProps = {
   cat: Cat;
   openCatModal: (id: string) => void;
@@ -32,16 +33,28 @@ export default function CatCard(props: CatCardProps) {
       {isLoading ? (
         <Skeleton variant='rectangular' height='200' />
       ) : (
-        <CardMedia
-          component='img'
-          height='200'
-          image={cat.url}
-          alt={`Cat ${cat.id}`}
-          sx={{
-            objectFit: 'cover',
-            width: '100%',
-          }}
-        />
+        <CardContent sx={{ padding: 1, position: 'relative' }}>
+          <CardMedia
+            component='img'
+            height='200'
+            image={cat.url}
+            alt={`Cat ${cat.id}`}
+            sx={{
+              objectFit: 'cover',
+              width: '100%',
+            }}
+          />
+          <HeartIcon
+            sx={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              fill: cat.isFavorite ? 'pink' : 'transparent',
+              stroke: 'pink',
+              fontSize: '40px',
+            }}
+          />
+        </CardContent>
       )}
     </Card>
   );

@@ -73,7 +73,7 @@ const CatModal = (props: CatModalProps) => {
           )}
           <Stack sx={{ flexGrow: 1, justifyContent: 'center', position: 'relative' }}>
             {showGuestCard ? (
-              <GuestCard handleClose={handleClose} />
+              <GuestCard handleClose={handleClose} currentGuest={guest} selectedCatId={selectedCatId} />
             ) : (
               <>
                 <CardMedia

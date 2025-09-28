@@ -32,13 +32,15 @@ export default function BreedsList(props: BreedsListProps) {
 
   return (
     <>
-      <CatModal
-        selectedCat={selectedCat}
-        closeCatModal={closeCatModal}
-        guest={guest}
-        refetchFavorites={refetchFavorites}
-        favoritesData={favoritesData}
-      />
+      {selectedCat && selectedCatId && (
+        <CatModal
+          selectedCat={selectedCat}
+          closeCatModal={closeCatModal}
+          guest={guest}
+          refetchFavorites={refetchFavorites}
+          favoritesData={favoritesData}
+        />
+      )}
       <Stack>
         {breeds.map((breed) => (
           <Card key={breed.id} onClick={() => handleSelectBreed(breed.id)}>
@@ -47,7 +49,7 @@ export default function BreedsList(props: BreedsListProps) {
               <Typography variant='body1'>{breed.temperament}</Typography>
               <Typography variant='body1'>{breed.origin}</Typography>
               <Typography variant='body1'>{breed.description}</Typography>
-              {selectedBreedId && <CatsList cats={cats} />}
+              {selectedBreedId === breed.id && <CatsList cats={cats} isLoading={false} />}
             </CardContent>
           </Card>
         ))}

@@ -4,8 +4,8 @@ import { type AppStore } from './store';
 
 // Lazy load components for better performance
 const Layout = lazy(() => import('../shared/components/main-layout'));
-const CatsPage = lazy(() => import('../modules/cats-list/cats-page'));
-const BreedsList = lazy(() => import('../modules/breeds-list/breeds-list'));
+const CatsPage = lazy(() => import('../modules/cats/cats-page'));
+const BreedsList = lazy(() => import('../modules/breeds/breeds-page'));
 const Favorites = lazy(() => import('../modules/favorites/favorites'));
 const BreedModal = lazy(() => import('../shared/components/modals/breed-modal'));
 const About = lazy(() => import('../modules/about/about')); //not really a module, but i'll leave it here for now

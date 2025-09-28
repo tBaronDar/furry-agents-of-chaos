@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import useCatsList from './hooks/use-cats-list';
+import useCatsList from './hooks/use-cats-page';
 import { type Cat } from '../../shared/dto/cat';
 import CatModal from '../../shared/components/modals/cat-details/cat-modal';
 import Button from '@mui/material/Button';

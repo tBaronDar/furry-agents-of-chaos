@@ -40,7 +40,7 @@ export default function useCatsList() {
 
   // Update cats favorite status when guest favorites change
   useEffect(() => {
-    if (guest?.guestName && guest.favoriteCatsIds.length >= 0) {
+    if (guest?.guestName !== '') {
       const updateCatsWithFavorites = (cats: Array<Cat>) =>
         cats.map((cat) => ({
           ...cat,

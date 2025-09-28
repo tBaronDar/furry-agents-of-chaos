@@ -49,16 +49,6 @@ const appSlice = createSlice({
         state.guest = createInitialGuest();
       }
     },
-    addToGuestFavorites(state, action: PayloadAction<string>) {
-      if (state.guest && state.guest.guestName !== '' && !state.guest.favoriteCatsIds.includes(action.payload)) {
-        state.guest.favoriteCatsIds.push(action.payload);
-      }
-    },
-    removeFromGuestFavorites(state, action: PayloadAction<string>) {
-      if (state.guest) {
-        state.guest.favoriteCatsIds = state.guest.favoriteCatsIds.filter((id) => id !== action.payload);
-      }
-    },
     toggleCatFavorite(state, action: PayloadAction<string>) {
       if (state.guest && state.guest.guestName !== '') {
         const catId = action.payload;
@@ -74,15 +64,6 @@ const appSlice = createSlice({
   },
 });
 
-export const {
-  setTheme,
-  setGuest,
-  openModal,
-  closeModal,
-  setSelectedCat,
-  ensureGuestExists,
-  addToGuestFavorites,
-  removeFromGuestFavorites,
-  toggleCatFavorite,
-} = appSlice.actions;
+export const { setTheme, setGuest, openModal, closeModal, setSelectedCat, ensureGuestExists, toggleCatFavorite } =
+  appSlice.actions;
 export default appSlice.reducer;

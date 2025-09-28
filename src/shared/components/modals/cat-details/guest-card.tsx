@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { z } from 'zod';
-import { setGuest, addToGuestFavorites } from '../../../reducers/app.reducer';
+import { setGuest } from '../../../reducers/app.reducer';
 import type { Guest } from '../../../dto/guest';
 import type { Cat } from '../../../dto/cat';
 
@@ -33,7 +33,6 @@ export default function GuestCard(props: GuestCardProps) {
         guestName: validatedName,
         favoriteCatsIds: [...currentGuest.favoriteCatsIds, selectedCat.id],
       };
-      dispatch(addToGuestFavorites(selectedCat.id));
       dispatch(setGuest(updatedGuest));
       handleClose();
     } catch (err) {

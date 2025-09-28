@@ -4,17 +4,19 @@ import type { Cat } from '../../../shared/dto/cat';
 import Skeleton from '@mui/material/Skeleton';
 import CardContent from '@mui/material/CardContent';
 import HeartIcon from '@mui/icons-material/Favorite';
+import { useDispatch } from 'react-redux';
+import { setSelectedCatId } from '../../../shared/reducers/app.reducer';
 type CatCardProps = {
   cat: Cat;
-  openCatModal: (id: string) => void;
-  isLoading: boolean;
+  isLoading?: boolean;
 };
 
 export default function CatCard(props: CatCardProps) {
-  const { cat, openCatModal, isLoading } = props;
+  const { cat, isLoading } = props;
+  const dispatch = useDispatch();
 
   const handleClick = () => {
-    openCatModal(cat.id);
+    dispatch(setSelectedCatId(cat.id));
   };
 
   return (

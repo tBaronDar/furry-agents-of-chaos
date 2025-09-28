@@ -13,14 +13,14 @@ import type { CatBreed } from '../../../dto/cat-breed-read';
 import type { FavoriteCat } from '../../../dto/favorite-cat-read';
 import HeartIcon from '@mui/icons-material/Favorite';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCatFavorite } from '../../../reducers/cats.reducer';
 import api from '../../../services/query/api';
 import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import type { RootState } from '../../../../config/store';
 
 export type CatModalProps = {
-  selectedCatId: string | null;
   selectedCat: Cat;
   closeCatModal: () => void;
   guest: Guest;
@@ -30,10 +30,11 @@ export type CatModalProps = {
 
 const CatModal = (props: CatModalProps) => {
   //maybe create a hook for all this logic
-  const { selectedCatId, selectedCat, closeCatModal, guest, refetchFavorites, favoritesData } = props;
+  const { selectedCat, closeCatModal, guest, refetchFavorites, favoritesData } = props;
   const [showGuestCard, setShowGuestCard] = useState(false);
 
   const dispatch = useDispatch();
+  const selectedCatId = useSelector((state: RootState) => state.app.selectedCatId);
   const [addToFavoritesMutation, { isLoading: isAddingToFavorites }] = api.useAddToFavoritesMutation();
   const [removeFromFavoritesMutation, { isLoading: isRemovingFromFavorites }] = api.useRemoveFromFavoritesMutation();
   if (!selectedCatId || !selectedCat.breeds || !selectedCat || !guest) return null;

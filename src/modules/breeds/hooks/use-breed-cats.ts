@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import api from '../../../shared/services/query/api';
 import { mapCatReadToCat } from '../../../shared/utils/mapper';
 import useFavorites from '../../../shared/hooks/use-favorites';
 import type { RootState } from '../../../config/store';
+import { setSelectedBreedId } from '../../../shared/reducers/app.reducer';
 
 export default function useBreedCats() {
+  const dispatch = useDispatch();
   const selectedBreedId = useSelector((state: RootState) => state.app.selectedBreedId);
 
   const { favoriteIds, updateCatsWithFavorites } = useFavorites();
@@ -23,13 +25,18 @@ export default function useBreedCats() {
     return updateCatsWithFavorites(catsWithFavorites);
   }, [data, favoriteIds, updateCatsWithFavorites]);
 
+  const handleSelectBreed = (breedId: string) => {
+    dispatch(setSelectedBreedId(breedId));
+  };
+
   return {
     breedsData,
-    selectedBreedId,
     isBreedsLoading,
     breedsError,
     cats: mappedCats,
     isLoading,
     error,
+    selectedBreedId,
+    handleSelectBreed,
   };
 }

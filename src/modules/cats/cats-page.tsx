@@ -16,8 +16,6 @@ export type CatsListProps = {
   newCats: Array<Cat>;
   oldCats: Array<Cat>;
   closeCatModal: () => void;
-  openCatModal: (id: string) => void;
-  selectedCatId: string | null;
   selectedCat: Cat;
   handleGetMoreCats: () => void;
   guest: Guest;
@@ -26,19 +24,8 @@ export type CatsListProps = {
 };
 
 const CatsPageInner = (props: CatsListProps) => {
-  const {
-    newCats,
-    oldCats,
-    selectedCatId,
-    selectedCat,
-    closeCatModal,
-    openCatModal,
-    handleGetMoreCats,
-    guest,
-    refetchFavorites,
-    favoritesData,
-  } = props;
-  console.log('selectedCatId', selectedCatId);
+  const { newCats, oldCats, selectedCat, closeCatModal, handleGetMoreCats, guest, refetchFavorites, favoritesData } =
+    props;
 
   const isInitialLoading = useSelector((state: RootState) => state.loading.isInitialLoading);
   const isFetchingMoreCats = useSelector((state: RootState) => state.loading.isFetchingMoreCats);
@@ -52,7 +39,6 @@ const CatsPageInner = (props: CatsListProps) => {
     <>
       {selectedCat && guest && (
         <CatModal
-          selectedCatId={selectedCatId}
           selectedCat={selectedCat}
           closeCatModal={closeCatModal}
           guest={guest}
@@ -102,14 +88,14 @@ const CatsPageInner = (props: CatsListProps) => {
           <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 2, mb: 1 }}>
             New Agents ({newCats.length})
           </Typography>
-          <CatsList cats={newCats} openCatModal={openCatModal} isLoading={isInitialLoading || isFetchingMoreCats} />
+          <CatsList cats={newCats} isLoading={isInitialLoading || isFetchingMoreCats} />
 
           {oldCats.length > 0 && (
             <>
               <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 3, mb: 1 }}>
                 Previous Agents ({oldCats.length})
               </Typography>
-              <CatsList cats={oldCats} openCatModal={openCatModal} isLoading={false} />
+              <CatsList cats={oldCats} isLoading={false} />
             </>
           )}
         </Stack>
@@ -119,26 +105,14 @@ const CatsPageInner = (props: CatsListProps) => {
 };
 
 const CatsPage: React.FC = () => {
-  const {
-    newCats,
-    oldCats,
-    closeCatModal,
-    openCatModal,
-    selectedCatId,
-    selectedCat,
-    handleGetMoreCats,
-    guest,
-    refetchFavorites,
-    favoritesData,
-  } = useCatsList();
+  const { newCats, oldCats, closeCatModal, selectedCat, handleGetMoreCats, guest, refetchFavorites, favoritesData } =
+    useCatsList();
 
   return (
     <CatsPageInner
       newCats={newCats}
       oldCats={oldCats}
       closeCatModal={closeCatModal}
-      openCatModal={openCatModal}
-      selectedCatId={selectedCatId}
       selectedCat={selectedCat}
       handleGetMoreCats={handleGetMoreCats}
       guest={guest}

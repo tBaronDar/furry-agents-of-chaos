@@ -8,6 +8,7 @@ interface AppState {
   currentModal: ModalType | null;
   currentModalId: string | null;
   selectedCatId: string | null;
+  selectedBreedId: string | null;
 }
 
 export const createInitialGuest = (): Guest => ({
@@ -21,6 +22,7 @@ const initialState: AppState = {
   currentModal: null,
   currentModalId: null,
   selectedCatId: null,
+  selectedBreedId: null,
 };
 
 const appSlice = createSlice({
@@ -39,9 +41,13 @@ const appSlice = createSlice({
     },
     closeModal(state) {
       state.selectedCatId = null;
+      state.selectedBreedId = null;
     },
-    setSelectedCat(state, action: PayloadAction<string>) {
+    setSelectedCatId(state, action: PayloadAction<string>) {
       state.selectedCatId = action.payload;
+    },
+    setSelectedBreedId(state, action: PayloadAction<string>) {
+      state.selectedBreedId = action.payload;
     },
     ensureGuestExists(state) {
       if (!state.guest) {
@@ -51,5 +57,6 @@ const appSlice = createSlice({
   },
 });
 
-export const { setTheme, setGuest, openModal, closeModal, setSelectedCat, ensureGuestExists } = appSlice.actions;
+export const { setTheme, setGuest, openModal, closeModal, setSelectedCatId, setSelectedBreedId, ensureGuestExists } =
+  appSlice.actions;
 export default appSlice.reducer;

@@ -1,5 +1,5 @@
 import api from '../../../shared/services/query/api';
-import { closeModal, openModal, setSelectedCat, ensureGuestExists } from '../../../shared/reducers/app.reducer';
+import { closeModal, openModal, setSelectedCatId, ensureGuestExists } from '../../../shared/reducers/app.reducer';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../../config/store';
 import { ModalType } from '../../../shared/utils/enums';
@@ -79,7 +79,7 @@ export default function useCatsList() {
   const closeCatModal = () => dispatch(closeModal());
   const openCatModal = (id: string) => {
     dispatch(openModal({ type: ModalType.CAT, id }));
-    dispatch(setSelectedCat(id));
+    dispatch(setSelectedCatId(id));
   };
 
   const fetchUniqueCats = useCallback(async (): Promise<Array<CatReadDTO>> => {

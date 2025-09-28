@@ -75,21 +75,24 @@ const api = createApi({
     }),
 
     // Favorites management
-    getFavorites: builder.query<Array<FavoriteCat>, void>({
-      query: () => ({
+    getFavorites: builder.query<Array<FavoriteCat>, { subId: string }>({
+      query: ({ subId }) => ({
         url: '/v1/favourites',
+        params: {
+          sub_id: subId,
+        },
         dataSchema: z.array(favoriteCatSchema),
       }),
       providesTags: ['Favorites'],
     }),
 
-    addToFavorites: builder.mutation<{ message: string; id: number }, { imageId: string }>({
-      query: ({ imageId }) => ({
+    addToFavorites: builder.mutation<{ message: string; id: number }, { imageId: string; subId: string }>({
+      query: ({ imageId, subId }) => ({
         url: '/v1/favourites',
         method: 'POST',
-        body: {
+        data: {
           image_id: imageId,
-          sub_id: 'cat-app-user', // to make it dynamic?
+          sub_id: subId,
         },
       }),
       invalidatesTags: ['Favorites'],

@@ -13,7 +13,6 @@ interface AppState {
 export const createInitialGuest = (): Guest => ({
   id: `guest_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
   guestName: '',
-  favoriteCatsIds: [],
 });
 
 const initialState: AppState = {
@@ -49,21 +48,8 @@ const appSlice = createSlice({
         state.guest = createInitialGuest();
       }
     },
-    toggleCatFavorite(state, action: PayloadAction<string>) {
-      if (state.guest && state.guest.guestName !== '') {
-        const catId = action.payload;
-        const isCurrentlyFavorite = state.guest.favoriteCatsIds.includes(catId);
-
-        if (isCurrentlyFavorite) {
-          state.guest.favoriteCatsIds = state.guest.favoriteCatsIds.filter((id) => id !== catId);
-        } else {
-          state.guest.favoriteCatsIds.push(catId);
-        }
-      }
-    },
   },
 });
 
-export const { setTheme, setGuest, openModal, closeModal, setSelectedCat, ensureGuestExists, toggleCatFavorite } =
-  appSlice.actions;
+export const { setTheme, setGuest, openModal, closeModal, setSelectedCat, ensureGuestExists } = appSlice.actions;
 export default appSlice.reducer;

@@ -30,7 +30,9 @@ export default function CustomAppBar(props: CustomAppBarProps) {
       'If you do this, you will lose your current roster of furry rascals.\nThis action cannot be undone.'
     );
     if (result) {
-      dispatch(setGuest(createInitialGuest()));
+      // Create new guest with empty name and new ID
+      const newGuest = createInitialGuest();
+      dispatch(setGuest(newGuest));
     }
   };
   return (

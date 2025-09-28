@@ -23,9 +23,16 @@ export default function useCatsList() {
 
   const { data, isLoading: isGetRandomCatsLoading, error, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
+  // Get favorites from API only if guest has a name
+  const { data: favoritesData, refetch: refetchFavorites } = api.useGetFavoritesQuery(
+    { subId: guest.id },
+    { skip: !guest.guestName || guest.guestName === '' }
+  );
+
   const mappedData = useMemo(() => {
-    return data?.map((catRead) => mapCatReadToCat(catRead, guest?.favoriteCatsIds || []));
-  }, [data, guest?.favoriteCatsIds]);
+    const favoriteIds = favoritesData?.map((fav) => fav.image_id) || [];
+    return data?.map((catRead) => mapCatReadToCat(catRead, favoriteIds));
+  }, [data, favoritesData]);
 
   // Ensure guest exists on mount
   useEffect(() => {
@@ -39,17 +46,27 @@ export default function useCatsList() {
     dispatch(setInitialLoading(isGetRandomCatsLoading));
   }, [isGetRandomCatsLoading, dispatch]);
 
-  // Update cats favorite status when guest favorites change
+  // Get cached cats for immediate updates
+  const cachedCats = useSelector((state: RootState) => state.cats.cachedCats);
+
+  // Update cats favorite status when favorites or cached cats change
   useEffect(() => {
+    const favoriteIds = favoritesData?.map((fav) => fav.image_id) || [];
     const updateCatsWithFavorites = (cats: Array<Cat>) =>
-      cats.map((cat) => ({
-        ...cat,
-        isFavorite: guest?.guestName !== '' ? guest.favoriteCatsIds.includes(cat.id) : false,
-      }));
+      cats.map((cat) => {
+        // Use cached favorite status if available, otherwise use API data
+        const cachedFavorite = cachedCats[cat.id]?.isFavorite;
+        const apiFavorite = guest?.guestName !== '' ? favoriteIds.includes(cat.id) : false;
+
+        return {
+          ...cat,
+          isFavorite: cachedFavorite !== undefined ? cachedFavorite : apiFavorite,
+        };
+      });
 
     setNewCats((prev) => updateCatsWithFavorites(prev));
     setOldCats((prev) => updateCatsWithFavorites(prev));
-  }, [guest, guest?.favoriteCatsIds, guest?.guestName]);
+  }, [favoritesData, guest?.guestName, cachedCats]);
 
   // update newCats when initial data arrives
   useEffect(() => {
@@ -86,10 +103,6 @@ export default function useCatsList() {
       const maxAttempts = 15;
       const targetNewCats = 10;
 
-      console.log(
-        `Starting to fetch ${targetNewCats} new cats. Current new: ${newCats.length}, old: ${oldCats.length}`
-      );
-
       while (freshCats.length < targetNewCats && attempts < maxAttempts) {
         attempts++;
 
@@ -99,15 +112,11 @@ export default function useCatsList() {
         }
 
         const fetchedCats = await fetchUniqueCats();
-        const mappedFetchedCats = fetchedCats.map((catRead) => mapCatReadToCat(catRead, guest?.favoriteCatsIds || []));
+        const favoriteIds = favoritesData?.map((fav) => fav.image_id) || [];
+        const mappedFetchedCats = fetchedCats.map((catRead) => mapCatReadToCat(catRead, favoriteIds));
         const uniqueCats = mappedFetchedCats.filter((cat) => !existingCatIds.has(cat.id));
         freshCats.push(...uniqueCats);
         uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
-
-        const efficiency = ((uniqueCats.length / mappedFetchedCats.length) * 100).toFixed(1);
-        console.log(
-          `Attempt ${attempts}: Fetched ${mappedFetchedCats.length} cats, ${uniqueCats.length} unique (${efficiency}% efficiency), total new: ${freshCats.length}/${targetNewCats}`
-        );
 
         // there is no exlude ids on the api so we need to check if we are getting unique cats
         if (attempts > 5 && uniqueCats.length === 0) {
@@ -120,10 +129,8 @@ export default function useCatsList() {
       if (freshCats.length > 0) {
         // Move current new cats to old cats, then set fresh cats as new cats
         setOldCats((prev) => [...newCats, ...prev]);
-        setNewCats(freshCats.map((catRead) => mapCatReadToCat(catRead, guest?.favoriteCatsIds || [])));
-        console.log(`Successfully added ${freshCats.length} new cats. Moved ${newCats.length} cats to old list.`);
-      } else {
-        console.log('No new unique cats found after maximum attempts');
+        const favoriteIds = favoritesData?.map((fav) => fav.image_id) || [];
+        setNewCats(freshCats.map((catRead) => mapCatReadToCat(catRead, favoriteIds)));
       }
     } catch (fetchError) {
       console.error('Error fetching more cats:', fetchError);
@@ -147,5 +154,6 @@ export default function useCatsList() {
     selectedCat,
     handleGetMoreCats,
     guest,
+    refetchFavorites,
   };
 }

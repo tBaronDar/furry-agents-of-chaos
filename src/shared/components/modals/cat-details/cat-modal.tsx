@@ -14,20 +14,22 @@ import HeartIcon from '@mui/icons-material/Favorite';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setCatFavorite } from '../../../reducers/cats.reducer';
-import { toggleCatFavorite } from '../../../reducers/app.reducer';
+import api from '../../../services/query/api';
 
 export type CatModalProps = {
   selectedCatId: string | null;
   selectedCat: Cat;
   closeCatModal: () => void;
   guest: Guest;
+  refetchFavorites: () => void;
 };
 
 const CatModal = (props: CatModalProps) => {
-  const { selectedCatId, selectedCat, closeCatModal, guest } = props;
+  const { selectedCatId, selectedCat, closeCatModal, guest, refetchFavorites } = props;
   const [showGuestCard, setShowGuestCard] = useState(false);
 
   const dispatch = useDispatch();
+  const [addToFavoritesMutation] = api.useAddToFavoritesMutation();
   if (!selectedCatId || !selectedCat.breeds || !selectedCat || !guest) return null;
   const breedInfo: CatBreed | null = selectedCat.breeds?.[0] || null;
   const maxImageWidth = 640;
@@ -35,18 +37,28 @@ const CatModal = (props: CatModalProps) => {
   const imageWidth = Math.min(selectedCat.width, maxImageWidth);
   const imageHeight = imageWidth / aspectRatio;
 
-  function addToFavorites(catId: string) {
+  async function addToFavorites(catId: string) {
     console.log('addToFavorites', catId);
     if (guest.guestName === '') {
       setShowGuestCard(true);
     } else {
-      const isCurrentlyFavorite = guest.favoriteCatsIds.includes(catId);
-      const newFavoriteStatus = !isCurrentlyFavorite;
+      try {
+        const isCurrentlyFavorite = selectedCat.isFavorite;
+        const newFavoriteStatus = !isCurrentlyFavorite;
 
-      // Update guest favorites
-      dispatch(toggleCatFavorite(catId));
-      // Update cached cat's favorite status
-      dispatch(setCatFavorite({ catId, isFavorite: newFavoriteStatus }));
+        if (newFavoriteStatus) {
+          // Add to favorites via API
+          await addToFavoritesMutation({ imageId: catId, subId: guest.id }).unwrap();
+          // Refetch favorites to update the UI
+          refetchFavorites();
+        }
+        // Note: We don't handle removal here as it requires the favorite ID from the API
+
+        // Update cached cat's favorite status
+        dispatch(setCatFavorite({ catId, isFavorite: newFavoriteStatus }));
+      } catch (error) {
+        console.error('Failed to update favorite:', error);
+      }
     }
   }
   function handleClose() {
@@ -80,7 +92,12 @@ const CatModal = (props: CatModalProps) => {
           )}
           <Stack sx={{ flexGrow: 1, justifyContent: 'center', position: 'relative' }}>
             {showGuestCard ? (
-              <GuestCard handleClose={handleClose} currentGuest={guest} selectedCat={selectedCat} />
+              <GuestCard
+                handleClose={handleClose}
+                currentGuest={guest}
+                selectedCat={selectedCat}
+                refetchFavorites={refetchFavorites}
+              />
             ) : (
               <>
                 <CardMedia

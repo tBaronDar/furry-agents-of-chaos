@@ -20,10 +20,21 @@ export type CatsListProps = {
   selectedCat: Cat;
   handleGetMoreCats: () => void;
   guest: Guest;
+  refetchFavorites: () => void;
 };
 
 const CatsPageInner = (props: CatsListProps) => {
-  const { newCats, oldCats, selectedCatId, selectedCat, closeCatModal, openCatModal, handleGetMoreCats, guest } = props;
+  const {
+    newCats,
+    oldCats,
+    selectedCatId,
+    selectedCat,
+    closeCatModal,
+    openCatModal,
+    handleGetMoreCats,
+    guest,
+    refetchFavorites,
+  } = props;
   console.log('selectedCatId', selectedCatId);
 
   const isInitialLoading = useSelector((state: RootState) => state.loading.isInitialLoading);
@@ -37,7 +48,13 @@ const CatsPageInner = (props: CatsListProps) => {
   return (
     <>
       {selectedCat && guest && (
-        <CatModal selectedCatId={selectedCatId} selectedCat={selectedCat} closeCatModal={closeCatModal} guest={guest} />
+        <CatModal
+          selectedCatId={selectedCatId}
+          selectedCat={selectedCat}
+          closeCatModal={closeCatModal}
+          guest={guest}
+          refetchFavorites={refetchFavorites}
+        />
       )}
 
       <Stack
@@ -98,8 +115,17 @@ const CatsPageInner = (props: CatsListProps) => {
 };
 
 const CatsPage: React.FC = () => {
-  const { newCats, oldCats, closeCatModal, openCatModal, selectedCatId, selectedCat, handleGetMoreCats, guest } =
-    useCatsList();
+  const {
+    newCats,
+    oldCats,
+    closeCatModal,
+    openCatModal,
+    selectedCatId,
+    selectedCat,
+    handleGetMoreCats,
+    guest,
+    refetchFavorites,
+  } = useCatsList();
 
   return (
     <CatsPageInner
@@ -111,6 +137,7 @@ const CatsPage: React.FC = () => {
       selectedCat={selectedCat}
       handleGetMoreCats={handleGetMoreCats}
       guest={guest}
+      refetchFavorites={refetchFavorites}
     />
   );
 };

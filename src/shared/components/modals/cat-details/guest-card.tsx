@@ -10,30 +10,44 @@ import { z } from 'zod';
 import { setGuest } from '../../../reducers/app.reducer';
 import type { Guest } from '../../../dto/guest';
 import type { Cat } from '../../../dto/cat';
+import api from '../../../services/query/api';
 
 export type GuestCardProps = {
   handleClose: () => void;
   currentGuest: Guest;
   selectedCat: Cat;
+  refetchFavorites: () => void;
 };
 
 const nameSchema = z.string().min(1).max(20);
 
 export default function GuestCard(props: GuestCardProps) {
-  const { handleClose, currentGuest, selectedCat } = props;
+  const { handleClose, currentGuest, selectedCat, refetchFavorites } = props;
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const dispatch = useDispatch();
+  const [addToFavoritesMutation] = api.useAddToFavoritesMutation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
       const validatedName = nameSchema.parse(name);
       const updatedGuest: Guest = {
         ...currentGuest,
         guestName: validatedName,
-        favoriteCatsIds: [...currentGuest.favoriteCatsIds, selectedCat.id],
       };
+
+      // Update guest
       dispatch(setGuest(updatedGuest));
+
+      // Add cat to favorites via API
+      try {
+        await addToFavoritesMutation({ imageId: selectedCat.id, subId: currentGuest.id }).unwrap();
+        // Refetch favorites to update the UI
+        refetchFavorites();
+      } catch (apiError) {
+        console.error('Failed to add to favorites:', apiError);
+      }
+
       handleClose();
     } catch (err) {
       if (err instanceof z.ZodError) {

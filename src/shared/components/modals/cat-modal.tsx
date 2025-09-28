@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import CardMedia from '@mui/material/CardMedia';
 import Stack from '@mui/material/Stack';
-import { Typography } from '@mui/material';
+import { Card, Typography } from '@mui/material';
 import type { Cat } from '../../dto/cat';
 
 export type CatModalProps = {
@@ -16,16 +16,29 @@ export type CatModalProps = {
 
 const CatModal = (props: CatModalProps) => {
   const { selectedCatId, selectedCat, closeCatModal } = props;
-
+  const breedInfo = selectedCat.breeds?.[0];
   return (
     <Dialog open={Boolean(selectedCatId)} onClose={() => closeCatModal()}>
       <DialogTitle>Cat Details</DialogTitle>
       <DialogContent>
-        <Stack>
-          <Typography variant='body1' color='text.secondary'>
-            {selectedCat.id}
-          </Typography>
-          <CardMedia component='img' height='740' image={selectedCat.url} alt='Cat' />
+        <Stack direction='row' spacing={2}>
+          <Stack spacing={4}>
+            <Typography variant='body1' color='text.secondary'>
+              {breedInfo?.name}
+            </Typography>
+            <Typography variant='body1' color='text.secondary'>
+              {breedInfo?.description}
+            </Typography>
+            <Typography variant='body1' color='text.secondary'>
+              {`Temperament: ${breedInfo?.temperament}`}
+            </Typography>
+            <Typography variant='body1' color='text.secondary'>
+              {`Origin: ${breedInfo?.origin}`}
+            </Typography>
+          </Stack>
+          <Card>
+            <CardMedia component='img' height='540' image={selectedCat.url} alt='Cat' />
+          </Card>
         </Stack>
       </DialogContent>
       <DialogActions>

@@ -155,5 +155,6 @@ export default function useCatsList() {
     handleGetMoreCats,
     guest,
     refetchFavorites,
+    favoritesData,
   };
 }

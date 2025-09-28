@@ -10,11 +10,14 @@ import type { Cat } from '../../../dto/cat';
 import GuestCard from './guest-card';
 import type { Guest } from '../../../dto/guest';
 import type { CatBreed } from '../../../dto/cat-breed-read';
+import type { FavoriteCat } from '../../../dto/favorite-cat-read';
 import HeartIcon from '@mui/icons-material/Favorite';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setCatFavorite } from '../../../reducers/cats.reducer';
 import api from '../../../services/query/api';
+import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export type CatModalProps = {
   selectedCatId: string | null;
@@ -22,22 +25,26 @@ export type CatModalProps = {
   closeCatModal: () => void;
   guest: Guest;
   refetchFavorites: () => void;
+  favoritesData: Array<FavoriteCat> | undefined;
 };
 
 const CatModal = (props: CatModalProps) => {
-  const { selectedCatId, selectedCat, closeCatModal, guest, refetchFavorites } = props;
+  //maybe create a hook for all this logic
+  const { selectedCatId, selectedCat, closeCatModal, guest, refetchFavorites, favoritesData } = props;
   const [showGuestCard, setShowGuestCard] = useState(false);
 
   const dispatch = useDispatch();
-  const [addToFavoritesMutation] = api.useAddToFavoritesMutation();
+  const [addToFavoritesMutation, { isLoading: isAddingToFavorites }] = api.useAddToFavoritesMutation();
+  const [removeFromFavoritesMutation, { isLoading: isRemovingFromFavorites }] = api.useRemoveFromFavoritesMutation();
   if (!selectedCatId || !selectedCat.breeds || !selectedCat || !guest) return null;
   const breedInfo: CatBreed | null = selectedCat.breeds?.[0] || null;
   const maxImageWidth = 640;
   const aspectRatio = selectedCat.width / selectedCat.height;
   const imageWidth = Math.min(selectedCat.width, maxImageWidth);
   const imageHeight = imageWidth / aspectRatio;
+  const isLoading = isAddingToFavorites || isRemovingFromFavorites;
 
-  async function addToFavorites(catId: string) {
+  async function toggleFavorite(catId: string) {
     console.log('addToFavorites', catId);
     if (guest.guestName === '') {
       setShowGuestCard(true);
@@ -49,10 +56,15 @@ const CatModal = (props: CatModalProps) => {
         if (newFavoriteStatus) {
           // Add to favorites via API
           await addToFavoritesMutation({ imageId: catId, subId: guest.id }).unwrap();
-          // Refetch favorites to update the UI
           refetchFavorites();
+        } else {
+          const favoriteRecord = favoritesData?.find((fav) => fav.image_id === catId);
+          if (favoriteRecord) {
+            // Remove from favorites via API using the favorite record ID
+            await removeFromFavoritesMutation({ favoriteId: favoriteRecord.id.toString() }).unwrap();
+            refetchFavorites();
+          }
         }
-        // Note: We don't handle removal here as it requires the favorite ID from the API
 
         // Update cached cat's favorite status
         dispatch(setCatFavorite({ catId, isFavorite: newFavoriteStatus }));
@@ -110,13 +122,19 @@ const CatModal = (props: CatModalProps) => {
                   image={selectedCat.url}
                   alt='Cat'
                 />
-                <Button
+                <IconButton
+                  aria-label='toggle favorite'
+                  disabled={isLoading}
                   sx={{ position: 'absolute', bottom: 0, right: 0 }}
-                  onClick={() => addToFavorites(selectedCat.id)}>
-                  <HeartIcon
-                    sx={{ fontSize: '40px', stroke: 'pink', fill: selectedCat.isFavorite ? 'pink' : 'transparent' }}
-                  />
-                </Button>
+                  onClick={() => toggleFavorite(selectedCat.id)}>
+                  {isLoading ? (
+                    <CircularProgress size={30} />
+                  ) : (
+                    <HeartIcon
+                      sx={{ fontSize: '40px', stroke: 'pink', fill: selectedCat.isFavorite ? 'pink' : 'transparent' }}
+                    />
+                  )}
+                </IconButton>
               </>
             )}
           </Stack>

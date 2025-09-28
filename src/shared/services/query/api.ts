@@ -98,7 +98,7 @@ const api = createApi({
       invalidatesTags: ['Favorites'],
     }),
 
-    removeFromFavorites: builder.mutation<{ message: string }, { favoriteId: number }>({
+    removeFromFavorites: builder.mutation<{ message: string }, { favoriteId: string }>({
       query: ({ favoriteId }) => ({
         url: `/v1/favourites/${favoriteId}`,
         method: 'DELETE',

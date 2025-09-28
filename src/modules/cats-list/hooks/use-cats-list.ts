@@ -27,10 +27,6 @@ export default function useCatsList() {
     return data?.map((catRead) => mapCatReadToCat(catRead, guest?.favoriteCatsIds || []));
   }, [data, guest?.favoriteCatsIds]);
 
-  useEffect(() => {
-    dispatch(setInitialLoading(isGetRandomCatsLoading));
-  }, [isGetRandomCatsLoading, dispatch]);
-
   // Ensure guest exists on mount
   useEffect(() => {
     if (!guest) {
@@ -38,19 +34,22 @@ export default function useCatsList() {
     }
   }, [guest, dispatch]);
 
+  // Update loading state
+  useEffect(() => {
+    dispatch(setInitialLoading(isGetRandomCatsLoading));
+  }, [isGetRandomCatsLoading, dispatch]);
+
   // Update cats favorite status when guest favorites change
   useEffect(() => {
-    if (guest?.guestName !== '') {
-      const updateCatsWithFavorites = (cats: Array<Cat>) =>
-        cats.map((cat) => ({
-          ...cat,
-          isFavorite: guest.favoriteCatsIds.includes(cat.id),
-        }));
+    const updateCatsWithFavorites = (cats: Array<Cat>) =>
+      cats.map((cat) => ({
+        ...cat,
+        isFavorite: guest?.guestName !== '' ? guest.favoriteCatsIds.includes(cat.id) : false,
+      }));
 
-      setNewCats((prev) => updateCatsWithFavorites(prev));
-      setOldCats((prev) => updateCatsWithFavorites(prev));
-    }
-  }, [guest?.favoriteCatsIds, guest?.guestName]);
+    setNewCats((prev) => updateCatsWithFavorites(prev));
+    setOldCats((prev) => updateCatsWithFavorites(prev));
+  }, [guest, guest?.favoriteCatsIds, guest?.guestName]);
 
   // update newCats when initial data arrives
   useEffect(() => {

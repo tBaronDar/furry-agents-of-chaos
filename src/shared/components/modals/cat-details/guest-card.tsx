@@ -43,10 +43,11 @@ export default function GuestCard(props: GuestCardProps) {
   };
   return (
     <Card>
-      <CardContent>
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant='h5'>Wait!</Typography>
         <Typography variant='body1'>
-          In order to add this cat to your roster of furry rascals, you need to give us your name.
+          In order to add this cat to your roster of furry rascals, you need to give us your name. Join the club and
+          rule the world with your furry minions!
         </Typography>
         <TextField
           label='Name'
@@ -61,7 +62,7 @@ export default function GuestCard(props: GuestCardProps) {
           helperText={error}
         />
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button variant='contained' color='primary' disabled={name.length === 0} onClick={handleSubmit}>
           Count Me In!
         </Button>

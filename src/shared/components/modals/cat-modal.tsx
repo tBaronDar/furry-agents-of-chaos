@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import CardMedia from '@mui/material/CardMedia';
 import Stack from '@mui/material/Stack';
-import { Card, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import type { Cat } from '../../dto/cat';
 
 export type CatModalProps = {
@@ -17,28 +17,49 @@ export type CatModalProps = {
 const CatModal = (props: CatModalProps) => {
   const { selectedCatId, selectedCat, closeCatModal } = props;
   const breedInfo = selectedCat.breeds?.[0];
+
+  const maxImageWidth = 640;
+  const aspectRatio = selectedCat.width / selectedCat.height;
+  const imageWidth = Math.min(selectedCat.width, maxImageWidth);
+  const imageHeight = imageWidth / aspectRatio;
+
   return (
-    <Dialog open={Boolean(selectedCatId)} onClose={() => closeCatModal()}>
+    <Dialog open={Boolean(selectedCatId)} onClose={() => closeCatModal()} maxWidth='lg' fullWidth>
       <DialogTitle>Cat Details</DialogTitle>
       <DialogContent>
-        <Stack direction='row' spacing={2}>
-          <Stack spacing={4}>
+        <Stack sx={{ display: 'flex', flexDirection: 'row', minHeight: imageHeight }}>
+          {breedInfo ? (
+            <Stack spacing={4} sx={{ width: 500, flexShrink: 0 }}>
+              <Typography variant='body1' color='text.secondary'>
+                {breedInfo?.name}
+              </Typography>
+              <Typography variant='body1' color='text.secondary'>
+                {breedInfo?.description}
+              </Typography>
+              <Typography variant='body1' color='text.secondary'>
+                {`Temperament: ${breedInfo?.temperament}`}
+              </Typography>
+              <Typography variant='body1' color='text.secondary'>
+                {`Origin: ${breedInfo?.origin}`}
+              </Typography>
+            </Stack>
+          ) : (
             <Typography variant='body1' color='text.secondary'>
-              {breedInfo?.name}
+              No breed information available
             </Typography>
-            <Typography variant='body1' color='text.secondary'>
-              {breedInfo?.description}
-            </Typography>
-            <Typography variant='body1' color='text.secondary'>
-              {`Temperament: ${breedInfo?.temperament}`}
-            </Typography>
-            <Typography variant='body1' color='text.secondary'>
-              {`Origin: ${breedInfo?.origin}`}
-            </Typography>
+          )}
+          <Stack sx={{ flexGrow: 1, justifyContent: 'center' }}>
+            <CardMedia
+              component='img'
+              sx={{
+                width: imageWidth,
+                height: imageHeight,
+                objectFit: 'contain',
+              }}
+              image={selectedCat.url}
+              alt='Cat'
+            />
           </Stack>
-          <Card>
-            <CardMedia component='img' height='540' image={selectedCat.url} alt='Cat' />
-          </Card>
         </Stack>
       </DialogContent>
       <DialogActions>

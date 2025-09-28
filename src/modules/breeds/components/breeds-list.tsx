@@ -1,15 +1,12 @@
 import Stack from '@mui/material/Stack';
 import type { CatBreed } from '../../../shared/dto/cat-breed-read';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import type { Cat } from '../../../shared/dto/cat';
-import CatsList from '../../cats/components/cats-list';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, setSelectedBreedId } from '../../../shared/reducers/app.reducer';
 import type { RootState } from '../../../config/store';
 import CatModal from '../../../shared/components/modals/cat-details/cat-modal';
 import useFavorites from '../../../shared/hooks/use-favorites';
+import BreedCard from './breed-card';
 
 export type BreedsListProps = {
   breeds: Array<CatBreed>;
@@ -21,7 +18,11 @@ export default function BreedsList(props: BreedsListProps) {
   const { refetchFavorites, favoritesData } = useFavorites();
   const dispatch = useDispatch();
   const handleSelectBreed = (breedId: string) => {
-    dispatch(setSelectedBreedId(breedId));
+    if (selectedBreedId === breedId) {
+      dispatch(setSelectedBreedId(null));
+    } else {
+      dispatch(setSelectedBreedId(breedId));
+    }
   };
   const selectedBreedId = useSelector((state: RootState) => state.app.selectedBreedId);
   const guest = useSelector((state: RootState) => state.app.guest);
@@ -29,6 +30,9 @@ export default function BreedsList(props: BreedsListProps) {
 
   const selectedCat = cats.find((cat) => cat.id === selectedCatId) as Cat;
   const closeCatModal = () => dispatch(closeModal());
+
+  console.log(breeds);
+  console.log('selectedBreedId', selectedBreedId);
 
   return (
     <>
@@ -41,17 +45,35 @@ export default function BreedsList(props: BreedsListProps) {
           favoritesData={favoritesData}
         />
       )}
-      <Stack>
+      <Stack
+        sx={{
+          gap: 2,
+          py: 2,
+          height: '100vh',
+          overflowY: 'auto',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: '#f1f1f1',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: '#c1c1c1',
+            borderRadius: '4px',
+            '&:hover': {
+              background: '#a8a8a8',
+            },
+          },
+        }}>
         {breeds.map((breed) => (
-          <Card key={breed.id} onClick={() => handleSelectBreed(breed.id)}>
-            <CardContent>
-              <Typography variant='h6'>{breed.name}</Typography>
-              <Typography variant='body1'>{breed.temperament}</Typography>
-              <Typography variant='body1'>{breed.origin}</Typography>
-              <Typography variant='body1'>{breed.description}</Typography>
-              {selectedBreedId === breed.id && <CatsList cats={cats} isLoading={false} />}
-            </CardContent>
-          </Card>
+          <BreedCard
+            key={breed.id}
+            breed={breed}
+            handleSelectBreed={handleSelectBreed}
+            selectedBreedId={selectedBreedId}
+            cats={cats}
+          />
         ))}
       </Stack>
     </>

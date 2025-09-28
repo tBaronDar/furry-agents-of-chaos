@@ -46,7 +46,7 @@ const appSlice = createSlice({
     setSelectedCatId(state, action: PayloadAction<string>) {
       state.selectedCatId = action.payload;
     },
-    setSelectedBreedId(state, action: PayloadAction<string>) {
+    setSelectedBreedId(state, action: PayloadAction<string | null>) {
       state.selectedBreedId = action.payload;
     },
     ensureGuestExists(state) {

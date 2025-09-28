@@ -10,7 +10,7 @@ import CatsList from './components/cats-list';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../config/store';
 import type { Guest } from '../../shared/dto/guest';
-import type { FavoriteCat } from '../../shared/dto/favorite-cat-read';
+import type { FavoriteCatReadDTO } from '../../shared/dto/favorite-cat-read';
 
 export type CatsListProps = {
   newCats: Array<Cat>;
@@ -20,7 +20,7 @@ export type CatsListProps = {
   handleGetMoreCats: () => void;
   guest: Guest;
   refetchFavorites: () => void;
-  favoritesData: Array<FavoriteCat> | undefined;
+  favoritesData: Array<FavoriteCatReadDTO> | undefined;
 };
 
 const CatsPageInner = (props: CatsListProps) => {

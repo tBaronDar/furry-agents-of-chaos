@@ -8,7 +8,7 @@ import { catReadSchema, type CatReadDTO } from '../../dto/cat-read';
 import { catBreedSchema } from '../../dto/cat-breed-read';
 import { favoriteCatSchema } from '../../dto/favorite-cat-read';
 import { type CatBreed } from '../../dto/cat-breed-read';
-import { type FavoriteCat } from '../../dto/favorite-cat-read';
+import { type FavoriteCatReadDTO } from '../../dto/favorite-cat-read';
 
 export type CatApiErrorKey = BaseErrorKey;
 
@@ -75,7 +75,7 @@ const api = createApi({
     }),
 
     // Favorites management
-    getFavorites: builder.query<Array<FavoriteCat>, { subId: string }>({
+    getFavorites: builder.query<Array<FavoriteCatReadDTO>, { subId: string }>({
       query: ({ subId }) => ({
         url: '/v1/favourites',
         params: {

@@ -1,27 +1,18 @@
-import useFavoritesPageHook from '../../../shared/hooks/use-favorites';
 import api from '../../../shared/services/query/api';
-import type { CatReadDTO } from '../../../shared/dto/cat-read';
-import { useMemo } from 'react';
-import { mapCatReadToCat } from '../../../shared/utils/mapper';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../../config/store';
 
 export default function useFavoritesPage() {
-  const { favoriteIds, updateCatsWithFavorites } = useFavoritesPageHook();
+  const guest = useSelector((state: RootState) => state.app.guest);
+  const { data, isLoading, error } = api.useGetFavoritesQuery(
+    { subId: guest.id },
+    { skip: !guest.guestName || guest.guestName === '' }
+  );
 
-  const catsReadDTO = useMemo(() => [] as Array<CatReadDTO>, []);
-  favoriteIds.forEach((favorite) => {
-    const { data: catsData, isLoading: isLoadingCats } = api.useGetCatByIdQuery({ id: favorite });
-    if (catsData && !isLoadingCats) {
-      catsReadDTO.push(catsData);
-    }
-  });
-
-  const mappedCats = useMemo(() => {
-    if (!catsReadDTO) return [];
-
-    const catsWithFavorites = catsReadDTO.map((catRead) => mapCatReadToCat(catRead, favoriteIds));
-    return updateCatsWithFavorites(catsWithFavorites);
-  }, [catsReadDTO, favoriteIds, updateCatsWithFavorites]);
+  const favoriteCats = data || [];
   return {
-    cats: mappedCats,
+    isLoading,
+    error,
+    favoriteCats,
   };
 }

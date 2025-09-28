@@ -12,4 +12,4 @@ export const favoriteCatSchema = z.object({
   }),
 });
 
-export type FavoriteCat = z.infer<typeof favoriteCatSchema>;
+export type FavoriteCatReadDTO = z.infer<typeof favoriteCatSchema>;

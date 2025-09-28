@@ -10,7 +10,6 @@ import type { Cat } from '../../../dto/cat';
 import GuestCard from './guest-card';
 import type { Guest } from '../../../dto/guest';
 import type { CatBreed } from '../../../dto/cat-breed-read';
-import type { FavoriteCat } from '../../../dto/favorite-cat-read';
 import HeartIcon from '@mui/icons-material/Favorite';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,13 +18,14 @@ import api from '../../../services/query/api';
 import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import type { RootState } from '../../../../config/store';
+import type { FavoriteCatReadDTO } from '../../../dto/favorite-cat-read';
 
 export type CatModalProps = {
   selectedCat: Cat;
   closeCatModal: () => void;
   guest: Guest;
   refetchFavorites: () => void;
-  favoritesData: Array<FavoriteCat> | undefined;
+  favoritesData: Array<FavoriteCatReadDTO> | undefined;
 };
 
 const CatModal = (props: CatModalProps) => {

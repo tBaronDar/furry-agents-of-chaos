@@ -33,6 +33,7 @@ const CatModal = (props: CatModalProps) => {
   const aspectRatio = selectedCat.width / selectedCat.height;
   const imageWidth = Math.min(selectedCat.width, maxImageWidth);
   const imageHeight = imageWidth / aspectRatio;
+
   function addToFavorites(catId: string) {
     console.log('addToFavorites', catId);
     if (guest.guestName === '') {
@@ -40,6 +41,9 @@ const CatModal = (props: CatModalProps) => {
     } else {
       dispatch(addToFavoritesAction({ catId, guest }));
     }
+  }
+  function handleClose() {
+    setShowGuestCard(false);
   }
 
   return (
@@ -69,7 +73,7 @@ const CatModal = (props: CatModalProps) => {
           )}
           <Stack sx={{ flexGrow: 1, justifyContent: 'center', position: 'relative' }}>
             {showGuestCard ? (
-              <GuestCard />
+              <GuestCard handleClose={handleClose} />
             ) : (
               <>
                 <CardMedia

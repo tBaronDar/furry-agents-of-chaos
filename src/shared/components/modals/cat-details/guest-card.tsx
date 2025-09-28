@@ -2,21 +2,30 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-export default function GuestCard() {
+export type GuestCardProps = {
+  handleClose: () => void;
+};
+
+export default function GuestCard(props: GuestCardProps) {
+  const { handleClose } = props;
   return (
     <Card>
-      <CardHeader>
-        <Typography variant='h6'>Wait!</Typography>
-      </CardHeader>
       <CardContent>
-        <Typography variant='h6'>Guest</Typography>
+        <Typography variant='h5'>Wait!</Typography>
+        <Typography variant='body1'>
+          In order to add this cat to your roster of furry rascals, you need to give us your name.
+        </Typography>
+        <TextField label='Name' variant='outlined' fullWidth />
       </CardContent>
       <CardActions>
         <Button variant='contained' color='primary'>
-          Sign up
+          Count Me In!
+        </Button>
+        <Button variant='contained' color='primary' onClick={handleClose}>
+          Don&apos;t bother me with nonsense
         </Button>
       </CardActions>
     </Card>

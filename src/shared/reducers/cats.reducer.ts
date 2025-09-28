@@ -1,6 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Cat } from '../dto/cat-read';
+import type { Cat } from '../dto/cat';
 import type { CatBreed } from '../dto/cat-breed-read';
+import type { CatReadDTO } from '../dto/cat-read';
+import { mapCatReadToCat } from '../utils/mapper';
 
 interface CatsState {
   cachedCats: Record<string, Cat>;
@@ -20,8 +22,8 @@ const catsSlice = createSlice({
   name: 'cats',
   initialState,
   reducers: {
-    cacheCat(state, action: PayloadAction<Cat>) {
-      state.cachedCats[action.payload.id] = action.payload;
+    cacheCat(state, action: PayloadAction<CatReadDTO>) {
+      state.cachedCats[action.payload.id] = mapCatReadToCat(action.payload);
     },
     cacheCats(state, action: PayloadAction<Array<Cat>>) {
       action.payload.forEach((cat) => {

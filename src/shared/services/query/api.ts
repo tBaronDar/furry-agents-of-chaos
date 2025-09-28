@@ -4,10 +4,9 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from './config';
 import type { BaseErrorKey, ErrorWithResponse, ErrorWithoutResponse, Error, Meta } from './config';
 import baseQueryWithZodValidation from './zod-validation-enhancer';
-import { catSchema } from '../../dto/cat-read';
+import { catReadSchema, type CatReadDTO } from '../../dto/cat-read';
 import { catBreedSchema } from '../../dto/cat-breed-read';
 import { favoriteCatSchema } from '../../dto/favorite-cat-read';
-import { type Cat } from '../../dto/cat-read';
 import { type CatBreed } from '../../dto/cat-breed-read';
 import { type FavoriteCat } from '../../dto/favorite-cat-read';
 
@@ -19,14 +18,14 @@ const api = createApi({
   tagTypes: ['Guest', 'Favorites', 'Cats'],
   endpoints: (builder) => ({
     // Guest user behavior - get random cats
-    getRandomCats: builder.query<Array<Cat>, { limit?: number }>({
+    getRandomCats: builder.query<Array<CatReadDTO>, { limit?: number }>({
       query: ({ limit = 10 }) => ({
         url: '/v1/images/search',
         params: {
           limit,
           has_breeds: 1, // Include breed information
         },
-        dataSchema: z.array(catSchema),
+        dataSchema: z.array(catReadSchema),
       }),
       providesTags: ['Cats'],
       transformErrorResponse(baseQueryReturnValue, meta?: Meta): Error<CatApiErrorKey> {
@@ -45,10 +44,10 @@ const api = createApi({
     }),
 
     // Get specific cat by ID
-    getCatById: builder.query<Cat, { id: string }>({
+    getCatById: builder.query<CatReadDTO, { id: string }>({
       query: ({ id }) => ({
         url: `/v1/images/${id}`,
-        dataSchema: catSchema,
+        dataSchema: catReadSchema,
       }),
       providesTags: ['Cats'],
     }),
@@ -63,14 +62,14 @@ const api = createApi({
     }),
 
     // Search cats by breed
-    getCatsByBreed: builder.query<Array<Cat>, { breedId: string; limit?: number }>({
+    getCatsByBreed: builder.query<Array<CatReadDTO>, { breedId: string; limit?: number }>({
       query: ({ breedId, limit = 10 }) => ({
         url: '/v1/images/search',
         params: {
           breed_ids: breedId,
           limit,
         },
-        dataSchema: z.array(catSchema),
+        dataSchema: z.array(catReadSchema),
       }),
       providesTags: ['Cats'],
     }),

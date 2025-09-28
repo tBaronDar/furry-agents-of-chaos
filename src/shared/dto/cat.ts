@@ -1,12 +1,13 @@
 import { z } from 'zod';
 import { catBreedSchema } from './cat-breed-read';
 
-export const catReadSchema = z.object({
+export const catSchema = z.object({
   id: z.string(),
   url: z.string(),
   width: z.number(),
   height: z.number(),
+  isFavorite: z.boolean().default(false),
   breeds: z.array(catBreedSchema).optional(),
 });
 
-export type CatReadDTO = z.infer<typeof catReadSchema>;
+export type Cat = z.infer<typeof catSchema>;

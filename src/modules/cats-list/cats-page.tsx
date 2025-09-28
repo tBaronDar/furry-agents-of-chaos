@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useCatsList from './hooks/use-cats-list';
-import { type Cat } from '../../shared/dto/cat-read';
+import { type Cat } from '../../shared/dto/cat';
 import CatModal from '../../shared/components/modals/cat-modal';
 import Button from '@mui/material/Button';
 import CatsList from './components/cats-list';

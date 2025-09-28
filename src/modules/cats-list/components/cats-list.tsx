@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack';
 import CatCard from './cat-card';
-import type { Cat } from '../../../shared/dto/cat-read';
+import type { Cat } from '../../../shared/dto/cat';
 
 type CatsListProps = {
   cats: Array<Cat>;

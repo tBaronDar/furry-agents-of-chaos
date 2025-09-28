@@ -3,13 +3,15 @@ import { closeModal, openModal, setSelectedCat } from '../../../shared/reducers/
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../../config/store';
 import { ModalType } from '../../../shared/utils/enums';
-import type { Cat } from '../../../shared/dto/cat-read';
-import { useState, useEffect, useCallback } from 'react';
+import type { CatReadDTO } from '../../../shared/dto/cat-read';
+import type { Cat } from '../../../shared/dto/cat';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   setInitialLoading,
   setFetchingMoreCats,
   setMaxAttemptsReached,
 } from '../../../shared/reducers/loading.reducer';
+import { mapCatReadToCat } from '../../../shared/utils/mapper';
 
 export default function useCatsList() {
   const dispatch = useDispatch();
@@ -20,15 +22,20 @@ export default function useCatsList() {
 
   const { data, isLoading: isGetRandomCatsLoading, error, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
+  const mappedData = useMemo(() => {
+    return data?.map(mapCatReadToCat);
+  }, [data]);
+
   useEffect(() => {
     dispatch(setInitialLoading(isGetRandomCatsLoading));
   }, [isGetRandomCatsLoading, dispatch]);
+
   // update newCats when initial data arrives
   useEffect(() => {
-    if (data && newCats.length === 0) {
-      setNewCats(data);
+    if (mappedData && newCats.length === 0) {
+      setNewCats(mappedData);
     }
-  }, [data, newCats.length]);
+  }, [mappedData, newCats.length]);
 
   //state staff
   const closeCatModal = () => dispatch(closeModal());
@@ -37,7 +44,7 @@ export default function useCatsList() {
     dispatch(setSelectedCat(id));
   };
 
-  const fetchUniqueCats = useCallback(async (): Promise<Array<Cat>> => {
+  const fetchUniqueCats = useCallback(async (): Promise<Array<CatReadDTO>> => {
     const response = await refetch();
     if (response.data) {
       return response.data;
@@ -53,7 +60,7 @@ export default function useCatsList() {
 
     try {
       const existingCatIds = new Set([...newCats, ...oldCats].map((cat) => cat.id));
-      const freshCats: Array<Cat> = [];
+      const freshCats: Array<CatReadDTO> = [];
       let attempts = 0;
       const maxAttempts = 15;
       const targetNewCats = 10;
@@ -71,13 +78,14 @@ export default function useCatsList() {
         }
 
         const fetchedCats = await fetchUniqueCats();
-        const uniqueCats = fetchedCats.filter((cat) => !existingCatIds.has(cat.id));
+        const mappedFetchedCats = fetchedCats.map(mapCatReadToCat);
+        const uniqueCats = mappedFetchedCats.filter((cat) => !existingCatIds.has(cat.id));
         freshCats.push(...uniqueCats);
         uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
 
-        const efficiency = ((uniqueCats.length / fetchedCats.length) * 100).toFixed(1);
+        const efficiency = ((uniqueCats.length / mappedFetchedCats.length) * 100).toFixed(1);
         console.log(
-          `Attempt ${attempts}: Fetched ${fetchedCats.length} cats, ${uniqueCats.length} unique (${efficiency}% efficiency), total new: ${freshCats.length}/${targetNewCats}`
+          `Attempt ${attempts}: Fetched ${mappedFetchedCats.length} cats, ${uniqueCats.length} unique (${efficiency}% efficiency), total new: ${freshCats.length}/${targetNewCats}`
         );
 
         // there is no exlude ids on the api so we need to check if we are getting unique cats
@@ -91,7 +99,7 @@ export default function useCatsList() {
       if (freshCats.length > 0) {
         // Move current new cats to old cats, then set fresh cats as new cats
         setOldCats((prev) => [...newCats, ...prev]);
-        setNewCats(freshCats);
+        setNewCats(freshCats.map(mapCatReadToCat));
         console.log(`Successfully added ${freshCats.length} new cats. Moved ${newCats.length} cats to old list.`);
       } else {
         console.log('No new unique cats found after maximum attempts');

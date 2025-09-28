@@ -1,6 +1,6 @@
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
-import type { Cat } from '../../../shared/dto/cat-read';
+import type { Cat } from '../../../shared/dto/cat';
 import Skeleton from '@mui/material/Skeleton';
 
 type CatCardProps = {

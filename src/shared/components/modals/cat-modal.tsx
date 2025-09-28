@@ -6,7 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import CardMedia from '@mui/material/CardMedia';
 import Stack from '@mui/material/Stack';
 import { Typography } from '@mui/material';
-import type { Cat } from '../../dto/cat-read';
+import type { Cat } from '../../dto/cat';
 
 export type CatModalProps = {
   selectedCatId: string | null;

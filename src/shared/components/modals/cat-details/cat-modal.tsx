@@ -26,10 +26,11 @@ const CatModal = () => {
     handleGuestCardClose,
     handleCatModalClose,
     toggleFavorite,
+    showModal,
   } = useCatDetails();
 
   return (
-    <Dialog open={true} onClose={() => {}} maxWidth='lg' fullWidth>
+    <Dialog open={showModal} onClose={() => {}} maxWidth='lg' fullWidth>
       <DialogTitle>Cat Details</DialogTitle>
       <DialogContent>
         <Stack sx={{ display: 'flex', flexDirection: 'row', minHeight: imageHeight }}>

@@ -5,7 +5,6 @@ import api from '../../../../services/query/api';
 import type { Cat } from '../../../../dto/cat';
 import { useEffect, useState } from 'react';
 import type { CatBreed } from '../../../../dto/cat-breed-read';
-import type { FavoriteCatReadDTO } from '../../../../dto/favorite-cat-read';
 import { setSelectedCatId } from '../../../../reducers/app.reducer';
 import { setFavoriteCats } from '../../../../reducers/favorites.reducer';
 
@@ -15,7 +14,7 @@ export const useCatDetails = () => {
   const { catId } = useParams();
   const selectedCatId = catId ?? '';
   const guest = useSelector((state: RootState) => state.app.guest);
-  const favoriteCats: Array<FavoriteCatReadDTO> = useSelector((state: RootState) => {
+  const favoriteCats = useSelector((state: RootState) => {
     if (state.favorites && state.favorites.favoriteCats) {
       return state.favorites.favoriteCats;
     }
@@ -30,10 +29,11 @@ export const useCatDetails = () => {
   }, [favoriteCatsData, favoriteCats, dispatch]);
 
   const [showGuestCard, setShowGuestCard] = useState(false);
+  const [showModal, setShowModal] = useState(true);
 
   const { data } = api.useGetCatByIdQuery({ id: selectedCatId });
   const selectedCat = data ?? ({} as Cat);
-  const isSelectedCat = selectedCatId === selectedCat.id;
+  const isSelectedCat = favoriteCats.some((fav) => fav.image_id === selectedCat.id);
 
   const [addToFavoritesMutation, { isLoading: isAddingToFavorites }] = api.useAddToFavoritesMutation();
   const [removeFromFavoritesMutation, { isLoading: isRemovingFromFavorites }] = api.useRemoveFromFavoritesMutation();
@@ -78,6 +78,7 @@ export const useCatDetails = () => {
   }
 
   function handleCatModalClose() {
+    setShowModal(false);
     void navigate('/cats');
   }
 
@@ -95,5 +96,6 @@ export const useCatDetails = () => {
     imageWidth,
     imageHeight,
     isLoading,
+    showModal,
   };
 };

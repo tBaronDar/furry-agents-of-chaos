@@ -3,16 +3,16 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useCatsList from './hooks/use-cats-page';
-import { type Cat } from '../../shared/dto/cat';
 import Button from '@mui/material/Button';
 import CatsList from './components/cats-list';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../config/store';
 import { Outlet } from 'react-router-dom';
+import type { CatReadDTO } from '../../shared/dto/cat-read';
 
 export type CatsListProps = {
-  newCats: Array<Cat>;
-  oldCats: Array<Cat>;
+  newCats: Array<CatReadDTO>;
+  oldCats: Array<CatReadDTO>;
   handleGetMoreCats: () => void;
 };
 

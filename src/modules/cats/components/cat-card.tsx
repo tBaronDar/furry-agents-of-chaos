@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import HeartIcon from '@mui/icons-material/Favorite';
 import { useDispatch } from 'react-redux';
 import { setSelectedCatId } from '../../../shared/reducers/app.reducer';
+import { useNavigate } from 'react-router-dom';
 type CatCardProps = {
   cat: Cat;
   isLoading?: boolean;
@@ -14,9 +15,10 @@ type CatCardProps = {
 export default function CatCard(props: CatCardProps) {
   const { cat, isLoading } = props;
   const dispatch = useDispatch();
-
-  const handleClick = () => {
+  const navigate = useNavigate();
+  const handleClick = async () => {
     dispatch(setSelectedCatId(cat.id));
+    await navigate(`/cats/${cat.id}`);
   };
 
   return (

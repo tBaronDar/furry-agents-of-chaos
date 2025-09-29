@@ -9,13 +9,13 @@ import { useDispatch } from 'react-redux';
 import { z } from 'zod';
 import { setGuest } from '../../../reducers/app.reducer';
 import type { Guest } from '../../../dto/guest';
-import type { Cat } from '../../../dto/cat';
 import api from '../../../services/query/api';
+import type { CatReadDTO } from '../../../dto/cat-read';
 
 export type GuestCardProps = {
   handleClose: () => void;
   currentGuest: Guest;
-  selectedCat: Cat;
+  selectedCat: CatReadDTO;
   refetchFavorites: () => void;
 };
 

@@ -5,6 +5,7 @@ import type { CatBreed } from '../../shared/dto/cat-breed-read';
 import BreedsList from './components/breeds-list';
 import useBreedsCats from './hooks/use-breed-cats';
 import type { Cat } from '../../shared/dto/cat';
+import { Outlet } from 'react-router-dom';
 
 export type BreedsPageInnerProps = {
   breeds: Array<CatBreed>;
@@ -23,6 +24,7 @@ const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
         Browse different cat breeds and their characteristics.
       </Typography>
       <BreedsList breeds={breeds} cats={cats} />
+      <Outlet />
     </Stack>
   );
 };

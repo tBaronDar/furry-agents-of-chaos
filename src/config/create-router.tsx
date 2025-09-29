@@ -1,13 +1,13 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import { lazy } from 'react';
 import { type AppStore } from './store';
+import CatModal from '../shared/components/modals/cat-details/cat-modal';
 
 // Lazy load components for better performance
 const Layout = lazy(() => import('../shared/components/main-layout'));
 const CatsPage = lazy(() => import('../modules/cats/cats-page'));
 const BreedsList = lazy(() => import('../modules/breeds/breeds-page'));
 const FavoritesPage = lazy(() => import('../modules/favorites/favorites-page'));
-const BreedModal = lazy(() => import('../shared/components/modals/breed-modal'));
 const About = lazy(() => import('../modules/about/about')); //not really a module, but i'll leave it here for now
 
 //do i need the store here? we'll see
@@ -18,8 +18,14 @@ export default function router(_store: AppStore) {
       element: <Layout />,
       children: [
         {
-          index: true,
+          path: 'cats',
           element: <CatsPage />,
+          children: [
+            {
+              path: ':catId',
+              element: <CatModal />,
+            },
+          ],
         },
         {
           path: 'breeds',
@@ -28,10 +34,12 @@ export default function router(_store: AppStore) {
         {
           path: 'favorites',
           element: <FavoritesPage />,
-        },
-        {
-          path: 'breed/:id',
-          element: <BreedModal />,
+          children: [
+            {
+              path: ':catId',
+              element: <CatModal />,
+            },
+          ],
         },
         {
           path: 'about',

@@ -15,6 +15,7 @@ export default function router(_store: AppStore) {
   return createBrowserRouter([
     {
       path: '/',
+      element: <Layout />,
       loader() {
         return redirect('/cats');
       },

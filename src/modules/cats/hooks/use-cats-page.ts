@@ -12,7 +12,6 @@ export default function useCatsList() {
   const oldCats = useSelector((state: RootState) => state.cats.oldCats);
   const { data, isLoading: isGetRandomCatsLoading, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
-  // On first load, set the fetched cats as new cats
   useEffect(() => {
     if (data && newCats.length === 0 && oldCats.length === 0) {
       dispatch(setNewCats(data));
@@ -32,16 +31,12 @@ export default function useCatsList() {
     dispatch(setFetchingMoreCats(true));
 
     try {
-      // If this is the first "get more" click (oldCats is empty)
       if (oldCats.length === 0) {
-        // Move current newCats to oldCats
         dispatch(setOldCats(newCats));
 
-        // Fetch new cats and set them as newCats
         const fetchedCats = await fetchUniqueCats();
         dispatch(setNewCats(fetchedCats));
       } else {
-        // Subsequent clicks: filter against both newCats and oldCats
         const existingCatIds = new Set([...newCats, ...oldCats].map((cat) => cat.id));
         const freshCats: Array<CatReadDTO> = [];
         let attempts = 0;
@@ -67,10 +62,8 @@ export default function useCatsList() {
         }
 
         if (freshCats.length > 0) {
-          // Move current newCats to oldCats
           dispatch(addCatsToOldCats(newCats));
-          // Set the new unique cats as newCats
-          dispatch(setNewCats(freshCats));
+          dispatch(setNewCats(freshCats.slice(0, 10)));
         }
       }
     } catch (fetchError) {

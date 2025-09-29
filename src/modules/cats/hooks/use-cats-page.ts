@@ -1,14 +1,23 @@
 import api from '../../../shared/services/query/api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { CatReadDTO } from '../../../shared/dto/cat-read';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { setFetchingMoreCats, setMaxAttemptsReached } from '../../../shared/reducers/loading.reducer';
+import { addCatsToOldCats, setNewCats, setOldCats } from '../../../shared/reducers/cats.reducer';
+import type { RootState } from '../../../config/store';
 
 export default function useCatsList() {
   const dispatch = useDispatch();
-
+  const newCats = useSelector((state: RootState) => state.cats.newCats);
+  const oldCats = useSelector((state: RootState) => state.cats.oldCats);
   const { data, isLoading: isGetRandomCatsLoading, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
-  const cats = data ?? [];
+
+  // On first load, set the fetched cats as new cats
+  useEffect(() => {
+    if (data && newCats.length === 0 && oldCats.length === 0) {
+      dispatch(setNewCats(data));
+    }
+  }, [data, newCats.length, oldCats.length, dispatch]);
   //handlers
   const fetchUniqueCats = useCallback(async (): Promise<Array<CatReadDTO>> => {
     const response = await refetch();
@@ -23,27 +32,45 @@ export default function useCatsList() {
     dispatch(setFetchingMoreCats(true));
 
     try {
-      const existingCatIds = new Set([...cats].map((cat) => cat.id));
-      const freshCats: Array<CatReadDTO> = [];
-      let attempts = 0;
-      const maxAttempts = 15;
-      const targetNewCats = 10;
+      // If this is the first "get more" click (oldCats is empty)
+      if (oldCats.length === 0) {
+        // Move current newCats to oldCats
+        dispatch(setOldCats(newCats));
 
-      while (freshCats.length < targetNewCats && attempts < maxAttempts) {
-        attempts++;
-        if (attempts > 1) {
-          await new Promise((resolve) => setTimeout(resolve, 200));
+        // Fetch new cats and set them as newCats
+        const fetchedCats = await fetchUniqueCats();
+        dispatch(setNewCats(fetchedCats));
+      } else {
+        // Subsequent clicks: filter against both newCats and oldCats
+        const existingCatIds = new Set([...newCats, ...oldCats].map((cat) => cat.id));
+        const freshCats: Array<CatReadDTO> = [];
+        let attempts = 0;
+        const maxAttempts = 15;
+        const targetNewCats = 10;
+
+        while (freshCats.length < targetNewCats && attempts < maxAttempts) {
+          attempts++;
+          if (attempts > 1) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+          }
+
+          const fetchedCats = await fetchUniqueCats();
+          const uniqueCats = fetchedCats.filter((cat) => !existingCatIds.has(cat.id));
+          freshCats.push(...uniqueCats);
+          uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
+
+          if (attempts > 5 && uniqueCats.length === 0) {
+            dispatch(setMaxAttemptsReached(true));
+            console.warn('No unique cats found in recent attempts. API might be rate limited or out of unique cats.');
+            break;
+          }
         }
 
-        const fetchedCats = await fetchUniqueCats();
-        const uniqueCats = fetchedCats.filter((cat) => !existingCatIds.has(cat.id));
-        freshCats.push(...uniqueCats);
-        uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
-
-        if (attempts > 5 && uniqueCats.length === 0) {
-          dispatch(setMaxAttemptsReached(true));
-          console.warn('No unique cats found in recent attempts. API might be rate limited or out of unique cats.');
-          break;
+        if (freshCats.length > 0) {
+          // Move current newCats to oldCats
+          dispatch(addCatsToOldCats(newCats));
+          // Set the new unique cats as newCats
+          dispatch(setNewCats(freshCats));
         }
       }
     } catch (fetchError) {
@@ -54,8 +81,9 @@ export default function useCatsList() {
   };
 
   return {
-    cats,
+    newCats,
+    oldCats,
     handleGetMoreCats,
-    isLoading: isGetRandomCatsLoading && cats.length === 0,
+    isLoading: isGetRandomCatsLoading && newCats.length === 0,
   };
 }

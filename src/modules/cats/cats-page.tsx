@@ -24,9 +24,6 @@ const CatsPageInner = (props: CatsListProps) => {
   const isFetchingMoreCats = useSelector((state: RootState) => state.loading.isFetchingMoreCats);
   const maxAttemptsReached = useSelector((state: RootState) => state.loading.maxAttemptsReached);
 
-  console.log('newCats', newCats);
-  console.log('oldCats', oldCats);
-
   return (
     <Stack
       sx={{
@@ -71,7 +68,7 @@ const CatsPageInner = (props: CatsListProps) => {
         </Typography>
         <CatsList cats={newCats} isLoading={isLoading || isInitialLoading || isFetchingMoreCats} />
 
-        {oldCats.length > 0 && (
+        {oldCats && oldCats.length > 0 && (
           <>
             <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 3, mb: 1 }}>
               Previous Agents ({oldCats.length})
@@ -86,10 +83,7 @@ const CatsPageInner = (props: CatsListProps) => {
 };
 
 const CatsPage: React.FC = () => {
-  const { cats, handleGetMoreCats, isLoading } = useCatsList();
-  const newCats = cats.slice(0, 10);
-  const oldCats = cats.slice(10);
-
+  const { newCats, oldCats, handleGetMoreCats, isLoading } = useCatsList();
   return (
     <CatsPageInner newCats={newCats} oldCats={oldCats} handleGetMoreCats={handleGetMoreCats} isLoading={isLoading} />
   );

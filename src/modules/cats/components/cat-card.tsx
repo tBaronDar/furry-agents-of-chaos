@@ -4,8 +4,6 @@ import type { CatReadDTO } from '../../../shared/dto/cat-read';
 import Skeleton from '@mui/material/Skeleton';
 import CardContent from '@mui/material/CardContent';
 import HeartIcon from '@mui/icons-material/Favorite';
-import { useDispatch } from 'react-redux';
-import { setSelectedCatId } from '../../../shared/reducers/app.reducer';
 import { useNavigate } from 'react-router-dom';
 import type { FavoriteCatReadDTO } from '../../../shared/dto/favorite-cat-read';
 
@@ -17,10 +15,8 @@ type CatCardProps = {
 
 export default function CatCard(props: CatCardProps) {
   const { cat, isLoading, favorites } = props;
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClick = async () => {
-    dispatch(setSelectedCatId(cat.id));
     await navigate(`/cats/${cat.id}`);
   };
 

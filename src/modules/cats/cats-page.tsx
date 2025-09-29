@@ -14,10 +14,11 @@ export type CatsListProps = {
   newCats: Array<CatReadDTO>;
   oldCats: Array<CatReadDTO>;
   handleGetMoreCats: () => void;
+  isLoading: boolean;
 };
 
 const CatsPageInner = (props: CatsListProps) => {
-  const { newCats, oldCats, handleGetMoreCats } = props;
+  const { newCats, oldCats, handleGetMoreCats, isLoading } = props;
 
   const isInitialLoading = useSelector((state: RootState) => state.loading.isInitialLoading);
   const isFetchingMoreCats = useSelector((state: RootState) => state.loading.isFetchingMoreCats);
@@ -68,7 +69,7 @@ const CatsPageInner = (props: CatsListProps) => {
         <Typography variant='h5' component='h2' gutterBottom sx={{ mt: 2, mb: 1 }}>
           New Agents ({newCats.length})
         </Typography>
-        <CatsList cats={newCats} isLoading={isInitialLoading || isFetchingMoreCats} />
+        <CatsList cats={newCats} isLoading={isLoading || isInitialLoading || isFetchingMoreCats} />
 
         {oldCats.length > 0 && (
           <>
@@ -85,9 +86,11 @@ const CatsPageInner = (props: CatsListProps) => {
 };
 
 const CatsPage: React.FC = () => {
-  const { newCats, oldCats, handleGetMoreCats } = useCatsList();
+  const { newCats, oldCats, handleGetMoreCats, isLoading } = useCatsList();
 
-  return <CatsPageInner newCats={newCats} oldCats={oldCats} handleGetMoreCats={handleGetMoreCats} />;
+  return (
+    <CatsPageInner newCats={newCats} oldCats={oldCats} handleGetMoreCats={handleGetMoreCats} isLoading={isLoading} />
+  );
 };
 
 export default CatsPage;

@@ -1,27 +1,13 @@
 import Stack from '@mui/material/Stack';
 import type { CatBreed } from '../../../shared/dto/cat-breed-read';
-import type { Cat } from '../../../shared/dto/cat';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedBreedId } from '../../../shared/reducers/app.reducer';
-import type { RootState } from '../../../config/store';
 import BreedCard from './breed-card';
 
 export type BreedsListProps = {
   breeds: Array<CatBreed>;
-  cats: Array<Cat>;
 };
 
 export default function BreedsList(props: BreedsListProps) {
-  const { breeds, cats } = props;
-  const dispatch = useDispatch();
-  const handleSelectBreed = (breedId: string) => {
-    if (selectedBreedId === breedId) {
-      dispatch(setSelectedBreedId(null));
-    } else {
-      dispatch(setSelectedBreedId(breedId));
-    }
-  };
-  const selectedBreedId = useSelector((state: RootState) => state.app.selectedBreedId);
+  const { breeds } = props;
 
   return (
     <Stack
@@ -46,13 +32,7 @@ export default function BreedsList(props: BreedsListProps) {
         },
       }}>
       {breeds.map((breed) => (
-        <BreedCard
-          key={breed.id}
-          breed={breed}
-          handleSelectBreed={handleSelectBreed}
-          selectedBreedId={selectedBreedId}
-          cats={cats}
-        />
+        <BreedCard key={breed.id} breed={breed} />
       ))}
     </Stack>
   );

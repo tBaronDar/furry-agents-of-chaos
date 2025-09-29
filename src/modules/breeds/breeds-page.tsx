@@ -4,17 +4,14 @@ import Stack from '@mui/material/Stack';
 import type { CatBreed } from '../../shared/dto/cat-breed-read';
 import BreedsList from './components/breeds-list';
 import useBreedsCats from './hooks/use-breed-cats';
-import type { Cat } from '../../shared/dto/cat';
 import { Outlet } from 'react-router-dom';
 
 export type BreedsPageInnerProps = {
   breeds: Array<CatBreed>;
-  isLoading: boolean;
-  cats: Array<Cat>;
 };
 
 const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
-  const { breeds, cats } = props;
+  const { breeds } = props;
   return (
     <Stack>
       <Typography variant='h4' component='h1' gutterBottom>
@@ -23,16 +20,16 @@ const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
       <Typography variant='body1' color='text.secondary'>
         Browse different cat breeds and their characteristics.
       </Typography>
-      <BreedsList breeds={breeds} cats={cats} />
+      <BreedsList breeds={breeds} />
       <Outlet />
     </Stack>
   );
 };
 
 function BreedsPage() {
-  const { breedsData, cats, isLoading } = useBreedsCats();
+  const { breedsData } = useBreedsCats();
   const breeds = breedsData || [];
-  return <BreedsPageInner breeds={breeds} isLoading={isLoading} cats={cats} />;
+  return <BreedsPageInner breeds={breeds} />;
 }
 
 export default BreedsPage;

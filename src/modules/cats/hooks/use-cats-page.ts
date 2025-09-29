@@ -1,15 +1,25 @@
 import api from '../../../shared/services/query/api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { CatReadDTO } from '../../../shared/dto/cat-read';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { setFetchingMoreCats, setMaxAttemptsReached } from '../../../shared/reducers/loading.reducer';
+import { setNewCats, addMoreCats } from '../../../shared/reducers/cats.reducer';
+import type { RootState } from '../../../config/store';
 
 export default function useCatsList() {
   const dispatch = useDispatch();
+  const newCats = useSelector((state: RootState) => state.cats?.newCats || []);
+  const oldCats = useSelector((state: RootState) => state.cats?.oldCats || []);
 
   const { data, isLoading: isGetRandomCatsLoading, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
-  let newCats: Array<CatReadDTO> = data || [];
-  let oldCats: Array<CatReadDTO> = [];
+
+  useEffect(() => {
+    if (data && newCats.length === 0 && oldCats.length === 0) {
+      dispatch(setNewCats(data));
+    }
+  }, [data, newCats, oldCats, dispatch]);
+
+  //handlers
   const fetchUniqueCats = useCallback(async (): Promise<Array<CatReadDTO>> => {
     const response = await refetch();
     if (response.data) {
@@ -18,10 +28,8 @@ export default function useCatsList() {
     return [];
   }, [refetch]);
 
-  //handlers
   const handleGetMoreCats = async () => {
     if (isGetRandomCatsLoading) return;
-
     dispatch(setFetchingMoreCats(true));
 
     try {
@@ -33,8 +41,6 @@ export default function useCatsList() {
 
       while (freshCats.length < targetNewCats && attempts < maxAttempts) {
         attempts++;
-
-        // add small delay to avoid rate limiting
         if (attempts > 1) {
           await new Promise((resolve) => setTimeout(resolve, 200));
         }
@@ -44,7 +50,6 @@ export default function useCatsList() {
         freshCats.push(...uniqueCats);
         uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
 
-        // there is no exlude ids on the api so we need to check if we are getting unique cats
         if (attempts > 5 && uniqueCats.length === 0) {
           dispatch(setMaxAttemptsReached(true));
           console.warn('No unique cats found in recent attempts. API might be rate limited or out of unique cats.');
@@ -53,9 +58,8 @@ export default function useCatsList() {
       }
 
       if (freshCats.length > 0) {
-        // Move current new cats to old cats, then set fresh cats as new cats
-        oldCats = [...newCats, ...oldCats];
-        newCats = freshCats;
+        const updatedOldCats = [...newCats, ...oldCats];
+        dispatch(addMoreCats({ newCats: freshCats, oldCats: updatedOldCats }));
       }
     } catch (fetchError) {
       console.error('Error fetching more cats:', fetchError);
@@ -68,5 +72,6 @@ export default function useCatsList() {
     newCats,
     oldCats,
     handleGetMoreCats,
+    isLoading: isGetRandomCatsLoading && newCats.length === 0,
   };
 }

@@ -1,29 +1,33 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Cat } from '../dto/cat';
+import type { CatReadDTO } from '../dto/cat-read';
 
 interface CatsState {
-  cachedCats: Record<string, Cat>;
+  newCats: Array<CatReadDTO>;
+  oldCats: Array<CatReadDTO>;
 }
 
 const initialState: CatsState = {
-  cachedCats: {},
+  newCats: [],
+  oldCats: [],
 };
 
 const catsSlice = createSlice({
   name: 'cats',
   initialState,
   reducers: {
-    setCatFavorite(state, action: PayloadAction<{ catId: string; isFavorite: boolean }>) {
-      const { catId, isFavorite } = action.payload;
-
-      // Update cached cat's isFavorite status
-      if (state.cachedCats[catId]) {
-        state.cachedCats[catId].isFavorite = isFavorite;
-      }
+    setNewCats(state, action: PayloadAction<Array<CatReadDTO>>) {
+      state.newCats = action.payload;
+    },
+    setOldCats(state, action: PayloadAction<Array<CatReadDTO>>) {
+      state.oldCats = action.payload;
+    },
+    addMoreCats(state, action: PayloadAction<{ newCats: Array<CatReadDTO>; oldCats: Array<CatReadDTO> }>) {
+      state.newCats = action.payload.newCats;
+      state.oldCats = action.payload.oldCats;
     },
   },
 });
 
-export const { setCatFavorite } = catsSlice.actions;
+export const { setNewCats, setOldCats, addMoreCats } = catsSlice.actions;
 
 export default catsSlice.reducer;

@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState } from '../../../../../config/store';
-import useFavorites from '../../../../hooks/use-favorites';
 import api from '../../../../services/query/api';
 import type { Cat } from '../../../../dto/cat';
 import { useState } from 'react';

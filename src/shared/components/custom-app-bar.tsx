@@ -59,17 +59,17 @@ export default function CustomAppBar(props: CustomAppBarProps) {
               Home
             </Typography>
           </Link>
-          <Link component={RouterLink} to='/cats/breeds' sx={linkStyles}>
+          <Link component={RouterLink} to='/breeds' sx={linkStyles}>
             <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
               Breeds
             </Typography>
           </Link>
-          <Link component={RouterLink} to='/cats/favorites' sx={linkStyles}>
+          <Link component={RouterLink} to='/favorites' sx={linkStyles}>
             <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
               Favorites
             </Typography>
           </Link>
-          <Link component={RouterLink} to='/cats/about' sx={linkStyles}>
+          <Link component={RouterLink} to='/about' sx={linkStyles}>
             <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
               About
             </Typography>

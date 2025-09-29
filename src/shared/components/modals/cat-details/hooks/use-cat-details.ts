@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { type RootState } from '../../../../../config/store';
 import api from '../../../../services/query/api';
@@ -7,10 +7,13 @@ import { useState } from 'react';
 import type { CatBreed } from '../../../../dto/cat-breed-read';
 
 export const useCatDetails = () => {
+  const { pathname } = useLocation();
+  const isCatModalRoute = pathname.includes('/cats');
+  const isBreedModalRoute = pathname.includes('/breeds');
   const { catId } = useParams();
   const selectedCatId = catId ?? '';
   const guest = useSelector((state: RootState) => state.app.guest);
-
+  const navigate = useNavigate();
   const { data: favoriteCatsData, refetch: refetchFavorites } = api.useGetFavoritesQuery({ subId: guest.id });
   const favoriteCats = favoriteCatsData || [];
 
@@ -61,8 +64,13 @@ export const useCatDetails = () => {
     setShowGuestCard(false);
   }
 
-  function handleCatModalClose() {
+  async function handleCatModalClose() {
     setShowModal(false);
+    if (isCatModalRoute) {
+      await navigate('/cats');
+    } else if (isBreedModalRoute) {
+      await navigate('/breeds');
+    }
   }
 
   return {

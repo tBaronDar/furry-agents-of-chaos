@@ -4,7 +4,7 @@ import type { CatReadDTO } from '../../../shared/dto/cat-read';
 import Skeleton from '@mui/material/Skeleton';
 import CardContent from '@mui/material/CardContent';
 import HeartIcon from '@mui/icons-material/Favorite';
-import { useNavigate } from 'react-router-dom';
+import { useMatch, useNavigate } from 'react-router-dom';
 import type { FavoriteCatReadDTO } from '../../../shared/dto/favorite-cat-read';
 
 type CatCardProps = {
@@ -16,8 +16,14 @@ type CatCardProps = {
 export default function CatCard(props: CatCardProps) {
   const { cat, isLoading, favorites } = props;
   const navigate = useNavigate();
+  const isCatModalRoute = useMatch('/cats');
+  const isBreedModalRoute = useMatch('/breeds');
   const handleClick = async () => {
-    await navigate(`/cats/${cat.id}`);
+    if (isCatModalRoute) {
+      await navigate(`/cats/${cat.id}`);
+    } else if (isBreedModalRoute) {
+      await navigate(`/breeds/${cat.id}`);
+    }
   };
 
   const isFavorite = favorites.some((favorite) => favorite.image_id === cat.id);

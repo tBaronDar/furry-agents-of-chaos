@@ -20,11 +20,11 @@ export default function router(_store: AppStore) {
       },
     },
     {
-      path: 'cats',
+      path: '',
       element: <Layout />,
       children: [
         {
-          path: '',
+          path: 'cats',
           element: <CatsPage />,
           children: [
             {
@@ -36,6 +36,12 @@ export default function router(_store: AppStore) {
         {
           path: 'breeds',
           element: <BreedsList />,
+          children: [
+            {
+              path: ':catId',
+              element: <CatModal />,
+            },
+          ],
         },
         {
           path: 'favorites',

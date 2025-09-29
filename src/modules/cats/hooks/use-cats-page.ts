@@ -1,24 +1,14 @@
 import api from '../../../shared/services/query/api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import type { CatReadDTO } from '../../../shared/dto/cat-read';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { setFetchingMoreCats, setMaxAttemptsReached } from '../../../shared/reducers/loading.reducer';
-import { setNewCats, addMoreCats } from '../../../shared/reducers/cats.reducer';
-import type { RootState } from '../../../config/store';
 
 export default function useCatsList() {
   const dispatch = useDispatch();
-  const newCats = useSelector((state: RootState) => state.cats?.newCats || []);
-  const oldCats = useSelector((state: RootState) => state.cats?.oldCats || []);
 
   const { data, isLoading: isGetRandomCatsLoading, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
-
-  useEffect(() => {
-    if (data && newCats.length === 0 && oldCats.length === 0) {
-      dispatch(setNewCats(data));
-    }
-  }, [data, newCats, oldCats, dispatch]);
-
+  const cats = data ?? [];
   //handlers
   const fetchUniqueCats = useCallback(async (): Promise<Array<CatReadDTO>> => {
     const response = await refetch();
@@ -33,7 +23,7 @@ export default function useCatsList() {
     dispatch(setFetchingMoreCats(true));
 
     try {
-      const existingCatIds = new Set([...newCats, ...oldCats].map((cat) => cat.id));
+      const existingCatIds = new Set([...cats].map((cat) => cat.id));
       const freshCats: Array<CatReadDTO> = [];
       let attempts = 0;
       const maxAttempts = 15;
@@ -56,11 +46,6 @@ export default function useCatsList() {
           break;
         }
       }
-
-      if (freshCats.length > 0) {
-        const updatedOldCats = [...newCats, ...oldCats];
-        dispatch(addMoreCats({ newCats: freshCats, oldCats: updatedOldCats }));
-      }
     } catch (fetchError) {
       console.error('Error fetching more cats:', fetchError);
     } finally {
@@ -69,9 +54,8 @@ export default function useCatsList() {
   };
 
   return {
-    newCats,
-    oldCats,
+    cats,
     handleGetMoreCats,
-    isLoading: isGetRandomCatsLoading && newCats.length === 0,
+    isLoading: isGetRandomCatsLoading && cats.length === 0,
   };
 }

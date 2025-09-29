@@ -2,32 +2,26 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { CatReadDTO } from '../dto/cat-read';
 
 interface CatsState {
-  newCats: Array<CatReadDTO>;
-  oldCats: Array<CatReadDTO>;
+  cats: Array<CatReadDTO>;
 }
 
 const initialState: CatsState = {
-  newCats: [],
-  oldCats: [],
+  cats: [],
 };
 
 const catsSlice = createSlice({
   name: 'cats',
   initialState,
   reducers: {
-    setNewCats(state, action: PayloadAction<Array<CatReadDTO>>) {
-      state.newCats = action.payload;
+    setCats(state, action: PayloadAction<Array<CatReadDTO>>) {
+      state.cats = action.payload;
     },
-    setOldCats(state, action: PayloadAction<Array<CatReadDTO>>) {
-      state.oldCats = action.payload;
-    },
-    addMoreCats(state, action: PayloadAction<{ newCats: Array<CatReadDTO>; oldCats: Array<CatReadDTO> }>) {
-      state.newCats = action.payload.newCats;
-      state.oldCats = action.payload.oldCats;
+    addMoreCats(state, action: PayloadAction<{ newCats: Array<CatReadDTO> }>) {
+      state.cats = action.payload.newCats;
     },
   },
 });
 
-export const { setNewCats, setOldCats, addMoreCats } = catsSlice.actions;
+export const { setCats, addMoreCats } = catsSlice.actions;
 
 export default catsSlice.reducer;

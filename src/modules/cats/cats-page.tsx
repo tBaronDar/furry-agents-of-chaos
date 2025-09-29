@@ -86,7 +86,9 @@ const CatsPageInner = (props: CatsListProps) => {
 };
 
 const CatsPage: React.FC = () => {
-  const { newCats, oldCats, handleGetMoreCats, isLoading } = useCatsList();
+  const { cats, handleGetMoreCats, isLoading } = useCatsList();
+  const newCats = cats.slice(0, 10);
+  const oldCats = cats.slice(10);
 
   return (
     <CatsPageInner newCats={newCats} oldCats={oldCats} handleGetMoreCats={handleGetMoreCats} isLoading={isLoading} />

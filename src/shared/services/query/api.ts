@@ -9,6 +9,7 @@ import { catBreedSchema } from '../../dto/cat-breed-read';
 import { favoriteCatSchema } from '../../dto/favorite-cat-read';
 import { type CatBreed } from '../../dto/cat-breed-read';
 import { type FavoriteCatReadDTO } from '../../dto/favorite-cat-read';
+import { setCats } from '../../reducers/cats.reducer';
 
 export type CatApiErrorKey = BaseErrorKey;
 
@@ -28,6 +29,19 @@ const api = createApi({
         dataSchema: z.array(catReadSchema),
       }),
       providesTags: ['Cats'],
+      transformResponse(response: Array<CatReadDTO>, meta) {
+        // Store the fetched cats in the cats slice if it's the initial load
+        const metaWithState = meta as {
+          baseQueryMeta?: { state?: { cats?: { cats?: Array<CatReadDTO> } } };
+          dispatch?: (action: { type: string; payload: Array<CatReadDTO> }) => void;
+        };
+        const state = metaWithState?.baseQueryMeta?.state;
+        if (state?.cats?.cats?.length === 0) {
+          // Dispatch the action to store cats in the slice
+          metaWithState?.dispatch?.(setCats(response));
+        }
+        return response;
+      },
       transformErrorResponse(baseQueryReturnValue, meta?: Meta): Error<CatApiErrorKey> {
         if (meta === undefined || !meta.hasResponse) {
           return baseQueryReturnValue as ErrorWithoutResponse<CatApiErrorKey>;

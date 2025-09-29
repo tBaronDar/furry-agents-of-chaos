@@ -9,7 +9,7 @@ import { catBreedSchema } from '../../dto/cat-breed-read';
 import { favoriteCatSchema } from '../../dto/favorite-cat-read';
 import { type CatBreed } from '../../dto/cat-breed-read';
 import { type FavoriteCatReadDTO } from '../../dto/favorite-cat-read';
-import { setCats } from '../../reducers/cats.reducer';
+import { addMoreCats, setCats } from '../../reducers/cats.reducer';
 
 export type CatApiErrorKey = BaseErrorKey;
 
@@ -38,6 +38,8 @@ const api = createApi({
         const state = metaWithState?.baseQueryMeta?.state;
         if (state?.cats?.cats?.length === 0) {
           // Dispatch the action to store cats in the slice
+          metaWithState?.dispatch?.(addMoreCats(response));
+        } else {
           metaWithState?.dispatch?.(setCats(response));
         }
         return response;

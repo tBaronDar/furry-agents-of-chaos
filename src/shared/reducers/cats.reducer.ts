@@ -16,8 +16,8 @@ const catsSlice = createSlice({
     setCats(state, action: PayloadAction<Array<CatReadDTO>>) {
       state.cats = action.payload;
     },
-    addMoreCats(state, action: PayloadAction<{ newCats: Array<CatReadDTO> }>) {
-      state.cats = action.payload.newCats;
+    addMoreCats(state, action: PayloadAction<Array<CatReadDTO>>) {
+      state.cats = [...state.cats, ...action.payload];
     },
   },
 });

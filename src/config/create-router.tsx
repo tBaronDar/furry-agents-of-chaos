@@ -15,10 +15,16 @@ export default function router(_store: AppStore) {
   return createBrowserRouter([
     {
       path: '/',
+      loader() {
+        return redirect('/cats');
+      },
+    },
+    {
+      path: 'cats',
       element: <Layout />,
       children: [
         {
-          path: 'cats',
+          path: '',
           element: <CatsPage />,
           children: [
             {
@@ -34,12 +40,6 @@ export default function router(_store: AppStore) {
         {
           path: 'favorites',
           element: <FavoritesPage />,
-          children: [
-            {
-              path: ':catId',
-              element: <CatModal />,
-            },
-          ],
         },
         {
           path: 'about',
@@ -50,7 +50,7 @@ export default function router(_store: AppStore) {
     {
       path: '*',
       loader() {
-        redirect('/');
+        return redirect('/cats');
       },
     },
   ]);

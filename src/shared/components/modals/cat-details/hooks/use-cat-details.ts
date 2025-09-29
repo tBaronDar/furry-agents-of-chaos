@@ -3,18 +3,32 @@ import { useSelector, useDispatch } from 'react-redux';
 import { type RootState } from '../../../../../config/store';
 import api from '../../../../services/query/api';
 import type { Cat } from '../../../../dto/cat';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CatBreed } from '../../../../dto/cat-breed-read';
+import type { FavoriteCatReadDTO } from '../../../../dto/favorite-cat-read';
 import { setSelectedCatId } from '../../../../reducers/app.reducer';
+import { setFavoriteCats } from '../../../../reducers/favorites.reducer';
 
 export const useCatDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { catId } = useParams();
   const selectedCatId = catId ?? '';
-  const { refetchFavorites, favoritesData } = useFavorites();
-
   const guest = useSelector((state: RootState) => state.app.guest);
+  const favoriteCats: Array<FavoriteCatReadDTO> = useSelector((state: RootState) => {
+    if (state.favorites && state.favorites.favoriteCats) {
+      return state.favorites.favoriteCats;
+    }
+    return [];
+  });
+  const { data: favoriteCatsData, refetch: refetchFavorites } = api.useGetFavoritesQuery({ subId: guest.id });
+
+  useEffect(() => {
+    if (favoriteCatsData && favoriteCats.length === 0) {
+      dispatch(setFavoriteCats(favoriteCatsData));
+    }
+  }, [favoriteCatsData, favoriteCats, dispatch]);
+
   const [showGuestCard, setShowGuestCard] = useState(false);
 
   const { data } = api.useGetCatByIdQuery({ id: selectedCatId });
@@ -44,7 +58,7 @@ export const useCatDetails = () => {
           await addToFavoritesMutation({ imageId: id, subId: guest.id }).unwrap();
           await refetchFavorites();
         } else {
-          const favoriteRecord = favoritesData?.find((fav) => fav.image_id === catId);
+          const favoriteRecord = favoriteCats.find((fav) => fav.image_id === catId);
           if (favoriteRecord) {
             // Remove from favorites via API using the favorite record ID
             await removeFromFavoritesMutation({ favoriteId: favoriteRecord.id.toString() }).unwrap();
@@ -68,7 +82,6 @@ export const useCatDetails = () => {
   }
 
   return {
-    favoritesData,
     selectedCat,
     guest,
     refetchFavorites,

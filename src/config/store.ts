@@ -9,13 +9,14 @@ import { logger as reduxLogger } from 'redux-logger';
 import appReducer from '../shared/reducers/app.reducer';
 import loadingReducer from '../shared/reducers/loading.reducer';
 import catsReducer from '../shared/reducers/cats.reducer';
+import favoritesReducer from '../shared/reducers/favorites.reducer';
 import api from '../shared/services/query/api';
 
 //  persistence config - only persist app state and cat data
 const rootPersistConfig = {
   key: 'root',
   storage,
-  whitelist: ['app', 'cats'], // Persist app settings and cached cat data
+  whitelist: ['app', 'cats', 'favorites'], // Persist app settings, cached cat data, and favorites
   blacklist: [api.reducerPath, 'loading'], // Don't persist API cache or loading states, maybe add loading to whitelist? i dont know
 };
 
@@ -25,6 +26,7 @@ export const rootReducer = persistReducer(
     app: appReducer,
     loading: loadingReducer,
     cats: catsReducer,
+    favorites: favoritesReducer,
     [api.reducerPath]: api.reducer,
   })
 );

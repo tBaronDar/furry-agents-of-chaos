@@ -3,10 +3,12 @@ import type { CatReadDTO } from '../dto/cat-read';
 
 interface CatsState {
   cats: Array<CatReadDTO>;
+  catsByBreed: Array<CatReadDTO>;
 }
 
 const initialState: CatsState = {
   cats: [],
+  catsByBreed: [],
 };
 
 const catsSlice = createSlice({
@@ -19,9 +21,12 @@ const catsSlice = createSlice({
     addMoreCats(state, action: PayloadAction<Array<CatReadDTO>>) {
       state.cats = [...state.cats, ...action.payload];
     },
+    setCatsByBreed(state, action: PayloadAction<Array<CatReadDTO>>) {
+      state.catsByBreed = action.payload;
+    },
   },
 });
 
-export const { setCats, addMoreCats } = catsSlice.actions;
+export const { setCats, addMoreCats, setCatsByBreed } = catsSlice.actions;
 
 export default catsSlice.reducer;

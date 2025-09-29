@@ -35,20 +35,6 @@ const appSlice = createSlice({
     setGuest(state, action: PayloadAction<Guest>) {
       state.guest = action.payload;
     },
-    openModal(state, action: PayloadAction<{ type: ModalType; id: string }>) {
-      state.currentModal = action.payload.type;
-      state.currentModalId = action.payload.id;
-    },
-    closeModal(state) {
-      state.selectedCatId = null;
-      state.selectedBreedId = null;
-    },
-    setSelectedCatId(state, action: PayloadAction<string>) {
-      state.selectedCatId = action.payload;
-    },
-    setSelectedBreedId(state, action: PayloadAction<string | null>) {
-      state.selectedBreedId = action.payload;
-    },
     ensureGuestExists(state) {
       if (!state.guest) {
         state.guest = createInitialGuest();
@@ -57,6 +43,5 @@ const appSlice = createSlice({
   },
 });
 
-export const { setTheme, setGuest, openModal, closeModal, setSelectedCatId, setSelectedBreedId, ensureGuestExists } =
-  appSlice.actions;
+export const { setTheme, setGuest, ensureGuestExists } = appSlice.actions;
 export default appSlice.reducer;

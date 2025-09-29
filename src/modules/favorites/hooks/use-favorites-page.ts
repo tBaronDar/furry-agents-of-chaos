@@ -8,8 +8,8 @@ export default function useFavoritesPage() {
     { subId: guest.id },
     { skip: !guest.guestName || guest.guestName === '' }
   );
-
   const favoriteCats = data || [];
+
   return {
     isLoading,
     error,

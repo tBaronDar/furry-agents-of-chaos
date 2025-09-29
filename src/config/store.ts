@@ -9,6 +9,7 @@ import { logger as reduxLogger } from 'redux-logger';
 import appReducer from '../shared/reducers/app.reducer';
 import loadingReducer from '../shared/reducers/loading.reducer';
 import catsReducer from '../shared/reducers/cats.reducer';
+import breedsReducer from '../shared/reducers/breeds.reducer';
 import favoritesReducer from '../shared/reducers/favorites.reducer';
 import api from '../shared/services/query/api';
 
@@ -16,7 +17,7 @@ import api from '../shared/services/query/api';
 const rootPersistConfig = {
   key: 'root',
   storage,
-  whitelist: ['app', 'cats', 'favorites'], // Persist app settings, cached cat data, and favorites
+  whitelist: ['app', 'cats', 'breeds', 'favorites'], // Persist app settings, cached cat data, breeds, and favorites
   blacklist: [api.reducerPath, 'loading'], // Don't persist API cache or loading states, maybe add loading to whitelist? i dont know
 };
 
@@ -26,6 +27,7 @@ export const rootReducer = persistReducer(
     app: appReducer,
     loading: loadingReducer,
     cats: catsReducer,
+    breeds: breedsReducer,
     favorites: favoritesReducer,
     [api.reducerPath]: api.reducer,
   })

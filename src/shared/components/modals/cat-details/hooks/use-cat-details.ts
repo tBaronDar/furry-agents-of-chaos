@@ -1,38 +1,25 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { type RootState } from '../../../../../config/store';
 import api from '../../../../services/query/api';
 import type { Cat } from '../../../../dto/cat';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { CatBreed } from '../../../../dto/cat-breed-read';
-import { setSelectedCatId } from '../../../../reducers/app.reducer';
-import { setFavoriteCats } from '../../../../reducers/favorites.reducer';
 
 export const useCatDetails = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { catId } = useParams();
   const selectedCatId = catId ?? '';
   const guest = useSelector((state: RootState) => state.app.guest);
-  const favoriteCats = useSelector((state: RootState) => {
-    if (state.favorites && state.favorites.favoriteCats) {
-      return state.favorites.favoriteCats;
-    }
-    return [];
-  });
-  const { data: favoriteCatsData, refetch: refetchFavorites } = api.useGetFavoritesQuery({ subId: guest.id });
 
-  useEffect(() => {
-    if (favoriteCatsData && favoriteCats.length === 0) {
-      dispatch(setFavoriteCats(favoriteCatsData));
-    }
-  }, [favoriteCatsData, favoriteCats, dispatch]);
+  const { data: favoriteCatsData, refetch: refetchFavorites } = api.useGetFavoritesQuery({ subId: guest.id });
+  const favoriteCats = favoriteCatsData || [];
 
   const [showGuestCard, setShowGuestCard] = useState(false);
   const [showModal, setShowModal] = useState(true);
 
-  const { data } = api.useGetCatByIdQuery({ id: selectedCatId });
-  const selectedCat = data ?? ({} as Cat);
+  const { data: selectedCatData } = api.useGetCatByIdQuery({ id: selectedCatId });
+  const selectedCat = selectedCatData ?? ({} as Cat);
+
   const isSelectedCat = favoriteCats.some((fav) => fav.image_id === selectedCat.id);
 
   const [addToFavoritesMutation, { isLoading: isAddingToFavorites }] = api.useAddToFavoritesMutation();
@@ -56,18 +43,15 @@ export const useCatDetails = () => {
         if (newFavoriteStatus) {
           // Add to favorites via API
           await addToFavoritesMutation({ imageId: id, subId: guest.id }).unwrap();
-          await refetchFavorites();
+          api.util.invalidateTags(['Favorites']);
         } else {
           const favoriteRecord = favoriteCats.find((fav) => fav.image_id === catId);
           if (favoriteRecord) {
             // Remove from favorites via API using the favorite record ID
             await removeFromFavoritesMutation({ favoriteId: favoriteRecord.id.toString() }).unwrap();
-            await refetchFavorites();
+            api.util.invalidateTags(['Favorites']);
           }
         }
-
-        // Update cached cat's favorite status
-        dispatch(setSelectedCatId(id));
       } catch (error) {
         console.error('Failed to update favorite:', error);
       }
@@ -79,7 +63,6 @@ export const useCatDetails = () => {
 
   function handleCatModalClose() {
     setShowModal(false);
-    void navigate('/cats');
   }
 
   return {

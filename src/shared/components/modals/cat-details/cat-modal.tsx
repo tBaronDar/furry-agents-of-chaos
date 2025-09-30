@@ -33,20 +33,17 @@ const CatModal = () => {
     <Dialog open={showModal} onClose={() => {}} maxWidth='lg' fullWidth>
       <DialogTitle>Cat Details</DialogTitle>
       <DialogContent>
-        <Stack sx={{ display: 'flex', flexDirection: 'row', minHeight: imageHeight }}>
+        <Stack sx={{ flexDirection: 'row', minHeight: imageHeight }}>
           {breedInfo ? (
-            <Stack spacing={4} sx={{ width: 500, flexShrink: 0 }}>
+            <Stack justifyContent='space-between'>
+              <Stack spacing={4} sx={{ p: 2, width: 500, flexShrink: 0 }}>
+                <Typography variant='h3'>{breedInfo?.name}</Typography>
+                <Typography variant='body1'>{breedInfo?.description}</Typography>
+                <Typography variant='body1'>{`Temperament: ${breedInfo?.temperament}`}</Typography>
+                <Typography variant='body1'>{`Origin: ${breedInfo?.origin}`}</Typography>
+              </Stack>
               <Typography variant='body1' color='text.secondary'>
-                {breedInfo?.name}
-              </Typography>
-              <Typography variant='body1' color='text.secondary'>
-                {breedInfo?.description}
-              </Typography>
-              <Typography variant='body1' color='text.secondary'>
-                {`Temperament: ${breedInfo?.temperament}`}
-              </Typography>
-              <Typography variant='body1' color='text.secondary'>
-                {`Origin: ${breedInfo?.origin}`}
+                Click on the heart to add to favorites
               </Typography>
             </Stack>
           ) : (

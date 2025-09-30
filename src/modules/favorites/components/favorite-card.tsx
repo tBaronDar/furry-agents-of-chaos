@@ -5,6 +5,7 @@ import type { FavoriteCatReadDTO } from '../../../shared/dto/favorite-cat-read';
 import TrashIcon from '@mui/icons-material/Delete';
 import api from '../../../shared/services/query/api';
 import CircularProgress from '@mui/material/CircularProgress';
+import Tooltip from '@mui/material/Tooltip';
 
 export type FavoriteCardProps = {
   favoriteCat: FavoriteCatReadDTO;
@@ -21,33 +22,45 @@ export default function FavoriteCard(props: FavoriteCardProps) {
   };
 
   return (
-    <Card onClick={() => handleDeleteFavorite(favoriteCat.id)} sx={{ cursor: 'pointer', position: 'relative' }}>
-      <CardContent sx={{ width: 200, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {isRemovingFromFavorites ? (
-          <CircularProgress size={100} />
-        ) : (
-          <CardMedia
-            image={favoriteCat.image.url}
-            alt={favoriteCat.image.id}
-            component='img'
-            sx={{ width: '100%', height: '100%' }}
-          />
-        )}
-      </CardContent>
-      <TrashIcon
-        sx={{
-          padding: '36px',
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          width: '100%',
-          height: '100%',
-          color: 'transparent',
-          '&:hover': {
-            color: 'inherit',
-          },
-        }}
-      />
-    </Card>
+    <Tooltip arrow placement='top' title='Click to remove from favorites'>
+      <Card
+        elevation={5}
+        onClick={() => handleDeleteFavorite(favoriteCat.id)}
+        sx={{ cursor: 'pointer', position: 'relative' }}>
+        <CardContent>
+          {isRemovingFromFavorites ? (
+            <CircularProgress size={100} />
+          ) : (
+            <CardMedia
+              component='img'
+              height='200'
+              image={favoriteCat.image.url}
+              alt={favoriteCat.image.id}
+              sx={{
+                objectFit: 'cover',
+                width: '100%',
+                borderRadius: '12px',
+              }}
+            />
+          )}
+        </CardContent>
+
+        <TrashIcon
+          sx={{
+            padding: '36px',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '100%',
+            height: '100%',
+            transition: 'color 0.3s ease-in-out',
+            color: 'transparent',
+            '&:hover': {
+              color: 'inherit',
+            },
+          }}
+        />
+      </Card>
+    </Tooltip>
   );
 }

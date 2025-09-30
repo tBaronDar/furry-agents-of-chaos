@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useCatsList from './hooks/use-cats-page';
 import Button from '@mui/material/Button';
@@ -32,14 +31,9 @@ const CatsPageInner = (props: CatsListProps) => {
         padding: '16px',
       }}>
       <Stack direction='row' spacing={2} justifyContent='space-between' alignItems='center'>
-        <Box>
-          <Typography variant='h4' component='h1' gutterBottom>
-            Random Cats
-          </Typography>
-          <Typography variant='body1' color='text.secondary'>
-            Welcome to Furry Agents of Chaos or FAC! Here yousee random cat images.
-          </Typography>
-        </Box>
+        <Typography variant='h4' component='h1' gutterBottom>
+          Here you can browse random cat agents.
+        </Typography>
         <Button
           variant='contained'
           color='primary'

@@ -14,12 +14,14 @@ const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
   const { breeds } = props;
   return (
     <Stack>
-      <Typography variant='h4' component='h1' gutterBottom>
-        Cat Breeds
-      </Typography>
-      <Typography variant='body1' color='text.secondary'>
-        Browse different cat breeds and their characteristics.
-      </Typography>
+      <Stack direction='row' justifyContent='space-between' alignItems='center'>
+        <Typography variant='h4' component='h1' gutterBottom>
+          Cat Breeds
+        </Typography>
+        <Typography variant='body1' color='text.secondary'>
+          Browse different cat breeds and their characteristics.
+        </Typography>
+      </Stack>
       <Stack
         sx={{
           height: 'calc(100vh - 160px)',

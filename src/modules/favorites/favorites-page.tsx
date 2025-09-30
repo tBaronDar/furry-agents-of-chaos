@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Stack } from '@mui/material';
 import useFavoritesPage from './hooks/use-favorites-page';
 import FavoritesList from './components/favorites-list';
 
@@ -20,12 +20,30 @@ const FavoritesPage: React.FC = () => {
   }
 
   return (
-    <Box>
+    <Stack
+      sx={{
+        height: 'calc(100vh - 160px)',
+        overflowY: 'auto',
+        '&::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: '#f1f1f1',
+          borderRadius: '4px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: '#c1c1c1',
+          borderRadius: '4px',
+          '&:hover': {
+            background: '#a8a8a8',
+          },
+        },
+      }}>
       <Typography variant='h4' component='h1' gutterBottom>
-        My Favorites
+        Your Agent&apos;s Roster
       </Typography>
       <FavoritesList favoriteCats={favoriteCats} />
-    </Box>
+    </Stack>
   );
 };
 

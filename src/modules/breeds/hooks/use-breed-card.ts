@@ -8,7 +8,11 @@ export default function useBreedCard() {
     { skip: !selectedBreedId }
   );
   const handleSelectBreed = (breedId: string | null) => {
-    setSelectedBreedId(breedId);
+    if (selectedBreedId === breedId) {
+      setSelectedBreedId(null);
+    } else if (!breedId || breedId !== selectedBreedId) {
+      setSelectedBreedId(breedId);
+    }
   };
   const cats = data ?? [];
   return {

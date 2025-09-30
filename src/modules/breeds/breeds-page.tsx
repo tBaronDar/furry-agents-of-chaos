@@ -20,7 +20,27 @@ const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
       <Typography variant='body1' color='text.secondary'>
         Browse different cat breeds and their characteristics.
       </Typography>
-      <BreedsList breeds={breeds} />
+      <Stack
+        sx={{
+          height: 'calc(100vh - 160px)',
+          overflowY: 'auto',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: '#f1f1f1',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: '#c1c1c1',
+            borderRadius: '4px',
+            '&:hover': {
+              background: '#a8a8a8',
+            },
+          },
+        }}>
+        <BreedsList breeds={breeds} />
+      </Stack>
       <Outlet />
     </Stack>
   );

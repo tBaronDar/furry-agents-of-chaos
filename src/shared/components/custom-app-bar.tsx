@@ -10,7 +10,9 @@ import type { Guest } from '../dto/guest';
 import { Logout } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import { createInitialGuest, setGuest } from '../reducers/app.reducer';
+import { setNewCats, setOldCats } from '../reducers/cats.reducer';
 import { useDispatch } from 'react-redux';
+import api from '../services/query/api';
 
 const linkStyles: SxProps = {
   flexGrow: 1,
@@ -27,12 +29,14 @@ export default function CustomAppBar(props: CustomAppBarProps) {
   const dispatch = useDispatch();
   const handleLogout = () => {
     const result = confirm(
-      'If you do this, you will lose your current roster of furry rascals.\nThis action cannot be undone.'
+      'If you do this, you will lose your current roster of furry rascals and you will clear the current random cats.\nThis action cannot be undone.'
     );
     if (result) {
-      // Create new guest with empty name and new ID
       const newGuest = createInitialGuest();
       dispatch(setGuest(newGuest));
+      dispatch(setNewCats([]));
+      dispatch(setOldCats([]));
+      api.util.invalidateTags(['Cats']);
     }
   };
   return (

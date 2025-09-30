@@ -6,6 +6,7 @@ import CustomAppBar from './custom-app-bar';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../config/store';
 import { ensureGuestExists } from '../reducers/app.reducer';
+import CustomSnackbar from './custom-snackbar';
 
 const Layout: React.FC = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const Layout: React.FC = () => {
       <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
         <Outlet />
       </Container>
+      <CustomSnackbar message='Hello, world!' />
     </CustomAppContainer>
   );
 };

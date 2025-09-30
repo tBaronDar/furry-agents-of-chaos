@@ -13,10 +13,10 @@ export default function useCatsList() {
   const { data, isLoading: isGetRandomCatsLoading, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
   useEffect(() => {
-    if (data && newCats.length === 0 && oldCats.length === 0) {
+    if (data && newCats && newCats.length === 0 && oldCats && oldCats.length === 0) {
       dispatch(setNewCats(data));
     }
-  }, [data, newCats.length, oldCats.length, dispatch]);
+  }, [data, newCats, oldCats, dispatch]);
   //handlers
   const fetchUniqueCats = useCallback(async (): Promise<Array<CatReadDTO>> => {
     const response = await refetch();
@@ -31,7 +31,7 @@ export default function useCatsList() {
     dispatch(setFetchingMoreCats(true));
 
     try {
-      if (oldCats.length === 0) {
+      if (oldCats && oldCats.length === 0) {
         dispatch(setOldCats(newCats));
 
         const fetchedCats = await fetchUniqueCats();
@@ -54,14 +54,14 @@ export default function useCatsList() {
           freshCats.push(...uniqueCats);
           uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
 
-          if (attempts > 5 && uniqueCats.length === 0) {
+          if (attempts > 5 && uniqueCats && uniqueCats.length === 0) {
             dispatch(setMaxAttemptsReached(true));
             console.warn('No unique cats found in recent attempts. API might be rate limited or out of unique cats.');
             break;
           }
         }
 
-        if (freshCats.length > 0) {
+        if (freshCats && freshCats.length > 0) {
           dispatch(addCatsToOldCats(newCats));
           dispatch(setNewCats(freshCats.slice(0, 10)));
         }

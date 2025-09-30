@@ -20,7 +20,7 @@ export const useCatDetails = () => {
   const [showGuestCard, setShowGuestCard] = useState(false);
   const [showModal, setShowModal] = useState(true);
 
-  const { data: selectedCatData } = api.useGetCatByIdQuery({ id: selectedCatId });
+  const { data: selectedCatData, isLoading: isSelectedCatLoading } = api.useGetCatByIdQuery({ id: selectedCatId });
   const selectedCat = selectedCatData ?? ({} as Cat);
 
   const isSelectedCat = favoriteCats.some((fav) => fav.image_id === selectedCat.id);
@@ -28,35 +28,29 @@ export const useCatDetails = () => {
   const [addToFavoritesMutation, { isLoading: isAddingToFavorites }] = api.useAddToFavoritesMutation();
   const [removeFromFavoritesMutation, { isLoading: isRemovingFromFavorites }] = api.useRemoveFromFavoritesMutation();
   const breedInfo: CatBreed | null = selectedCat.breeds?.[0] || null;
-  const maxImageWidth = 640;
+  const maxImageWidth = 600;
   const aspectRatio = selectedCat.width / selectedCat.height;
   const imageWidth = Math.min(selectedCat.width, maxImageWidth);
   const imageHeight = imageWidth / aspectRatio;
-  const isLoading = isAddingToFavorites || isRemovingFromFavorites;
+
+  const isLoading = isAddingToFavorites || isRemovingFromFavorites || isSelectedCatLoading;
 
   async function toggleFavorite(id: string) {
-    console.log('addToFavorites', id);
     if (guest.guestName === '') {
       setShowGuestCard(true);
     } else {
-      try {
-        const isCurrentlyFavorite = isSelectedCat;
-        const newFavoriteStatus = !isCurrentlyFavorite;
+      const isCurrentlyFavorite = isSelectedCat;
+      const newFavoriteStatus = !isCurrentlyFavorite;
 
-        if (newFavoriteStatus) {
-          // Add to favorites via API
-          await addToFavoritesMutation({ imageId: id, subId: guest.id }).unwrap();
+      if (newFavoriteStatus) {
+        await addToFavoritesMutation({ imageId: id, subId: guest.id }).unwrap();
+        api.util.invalidateTags(['Favorites']);
+      } else {
+        const favoriteRecord = favoriteCats.find((fav) => fav.image_id === catId);
+        if (favoriteRecord) {
+          await removeFromFavoritesMutation({ favoriteId: favoriteRecord.id.toString() }).unwrap();
           api.util.invalidateTags(['Favorites']);
-        } else {
-          const favoriteRecord = favoriteCats.find((fav) => fav.image_id === catId);
-          if (favoriteRecord) {
-            // Remove from favorites via API using the favorite record ID
-            await removeFromFavoritesMutation({ favoriteId: favoriteRecord.id.toString() }).unwrap();
-            api.util.invalidateTags(['Favorites']);
-          }
         }
-      } catch (error) {
-        console.error('Failed to update favorite:', error);
       }
     }
   }

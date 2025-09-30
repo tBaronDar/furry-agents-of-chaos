@@ -32,17 +32,38 @@ const CatModal = () => {
   return (
     <Dialog open={showModal} onClose={() => {}} maxWidth='lg' fullWidth>
       <DialogTitle>Cat Details</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ overflow: 'visible' }}>
         <Stack sx={{ flexDirection: 'row', minHeight: imageHeight }}>
           {breedInfo ? (
             <Stack justifyContent='space-between'>
               <Stack spacing={4} sx={{ p: 2, width: 500, flexShrink: 0 }}>
-                <Typography variant='h3'>{breedInfo?.name}</Typography>
-                <Typography variant='body1'>{breedInfo?.description}</Typography>
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                  <Typography variant='h3'>{breedInfo?.name}</Typography>
+                  <IconButton
+                    aria-label='toggle favorite'
+                    disabled={isLoading}
+                    onClick={() => toggleFavorite(selectedCat.id)}>
+                    {isLoading ? (
+                      <CircularProgress size={30} />
+                    ) : (
+                      <HeartIcon
+                        sx={{
+                          fontSize: '40px',
+                          strokeWidth: '2px',
+                          stroke: 'pink',
+                          fill: isSelectedCat ? 'pink' : 'transparent',
+                        }}
+                      />
+                    )}
+                  </IconButton>
+                </Stack>
+                <Typography variant='body1' sx={{ textWrap: 'pretty' }}>
+                  {breedInfo?.description}
+                </Typography>
                 <Typography variant='body1'>{`Temperament: ${breedInfo?.temperament}`}</Typography>
                 <Typography variant='body1'>{`Origin: ${breedInfo?.origin}`}</Typography>
               </Stack>
-              <Typography variant='body1' color='text.secondary'>
+              <Typography variant='body1' fontStyle='italic' color='text.secondary'>
                 Click on the heart to add to favorites
               </Typography>
             </Stack>
@@ -51,7 +72,7 @@ const CatModal = () => {
               No breed information available
             </Typography>
           )}
-          <Stack sx={{ flexGrow: 1, justifyContent: 'center', position: 'relative' }}>
+          <Stack sx={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
             {showGuestCard ? (
               <GuestCard
                 handleClose={() => handleGuestCardClose()}
@@ -60,31 +81,16 @@ const CatModal = () => {
                 refetchFavorites={refetchFavorites}
               />
             ) : (
-              <>
-                <CardMedia
-                  component='img'
-                  sx={{
-                    width: imageWidth,
-                    height: imageHeight,
-                    objectFit: 'contain',
-                  }}
-                  image={selectedCat.url}
-                  alt='Cat'
-                />
-                <IconButton
-                  aria-label='toggle favorite'
-                  disabled={isLoading}
-                  sx={{ position: 'absolute', bottom: 0, right: 0 }}
-                  onClick={() => toggleFavorite(selectedCat.id)}>
-                  {isLoading ? (
-                    <CircularProgress size={30} />
-                  ) : (
-                    <HeartIcon
-                      sx={{ fontSize: '40px', stroke: 'pink', fill: isSelectedCat ? 'pink' : 'transparent' }}
-                    />
-                  )}
-                </IconButton>
-              </>
+              <CardMedia
+                component='img'
+                sx={{
+                  width: imageWidth,
+                  height: imageHeight,
+                  objectFit: 'contain',
+                }}
+                image={selectedCat.url}
+                alt='Cat'
+              />
             )}
           </Stack>
         </Stack>

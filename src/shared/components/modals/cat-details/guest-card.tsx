@@ -11,6 +11,7 @@ import { setGuest } from '../../../reducers/app.reducer';
 import type { Guest } from '../../../dto/guest';
 import api from '../../../services/query/api';
 import type { CatReadDTO } from '../../../dto/cat-read';
+import { Stack } from '@mui/material';
 
 export type GuestCardProps = {
   handleClose: () => void;
@@ -35,19 +36,9 @@ export default function GuestCard(props: GuestCardProps) {
         ...currentGuest,
         guestName: validatedName,
       };
-
-      // Update guest
       dispatch(setGuest(updatedGuest));
-
-      // Add cat to favorites via API
-      try {
-        await addToFavoritesMutation({ imageId: selectedCat.id, subId: currentGuest.id }).unwrap();
-        // Refetch favorites to update the UI
-        refetchFavorites();
-      } catch (apiError) {
-        console.error('Failed to add to favorites:', apiError);
-      }
-
+      await addToFavoritesMutation({ imageId: selectedCat.id, subId: currentGuest.id }).unwrap();
+      refetchFavorites();
       handleClose();
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -56,25 +47,33 @@ export default function GuestCard(props: GuestCardProps) {
     }
   };
   return (
-    <Card>
-      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Typography variant='h5'>Wait!</Typography>
-        <Typography variant='body1'>
-          In order to add this cat to your roster of furry rascals, you need to give us your name. Join the club and
-          rule the world with your furry minions!
+    <Card elevation={5}>
+      <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Stack spacing={4}>
+          <Typography variant='h4'>Wait!</Typography>
+          <Typography variant='body1'>
+            In order to add this cat to your roster of furry rascals, you need to give us your name. Join the club and
+            rule the world with your furry minions!
+          </Typography>
+          <TextField
+            label='Name'
+            variant='outlined'
+            fullWidth
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              setError('');
+            }}
+            error={Boolean(error)}
+            helperText={error}
+          />
+        </Stack>
+        <Typography
+          sx={{ textAlign: 'right', fontStyle: 'italic', fontSize: '12px' }}
+          color='text.secondary'
+          variant='body1'>
+          Max 20 characters
         </Typography>
-        <TextField
-          label='Name'
-          variant='outlined'
-          fullWidth
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            setError('');
-          }}
-          error={Boolean(error)}
-          helperText={error}
-        />
       </CardContent>
       <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button variant='contained' color='primary' disabled={name.length === 0} onClick={handleSubmit}>

@@ -6,6 +6,9 @@ import CardContent from '@mui/material/CardContent';
 import HeartIcon from '@mui/icons-material/Favorite';
 import { useMatch, useNavigate } from 'react-router-dom';
 import type { FavoriteCatReadDTO } from '../../../shared/dto/favorite-cat-read';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import CardActionArea from '@mui/material/CardActionArea';
 
 type CatCardProps = {
   cat: CatReadDTO;
@@ -30,6 +33,7 @@ export default function CatCard(props: CatCardProps) {
 
   return (
     <Card
+      elevation={5}
       sx={{
         cursor: 'pointer',
         transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
@@ -37,14 +41,15 @@ export default function CatCard(props: CatCardProps) {
           transform: 'scale(1.05)',
           boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
         },
-        borderRadius: '12px',
+        borderRadius: '16px',
         overflow: 'hidden',
+        pb: 0,
       }}
       onClick={handleClick}>
       {isLoading ? (
-        <Skeleton variant='rectangular' height='200' />
+        <Skeleton variant='rectangular' height='200px' />
       ) : (
-        <CardContent sx={{ padding: 1, position: 'relative' }}>
+        <CardContent sx={{ padding: 1 }}>
           <CardMedia
             component='img'
             height='200'
@@ -53,20 +58,30 @@ export default function CatCard(props: CatCardProps) {
             sx={{
               objectFit: 'cover',
               width: '100%',
-            }}
-          />
-          <HeartIcon
-            sx={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              fill: isFavorite ? 'pink' : 'transparent',
-              stroke: 'pink',
-              fontSize: '40px',
+              borderRadius: '12px',
             }}
           />
         </CardContent>
       )}
+      <CardActionArea
+        sx={{
+          px: '10px',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        {isFavorite ? (
+          <>
+            <HeartIcon sx={{ fontSize: '12px', fill: 'pink' }} />
+            <Typography sx={{ fontSize: '12px', fontStyle: 'italic', textAlign: 'right', py: '2px' }} variant='body1'>
+              This beauty is in your favorites!
+            </Typography>
+          </>
+        ) : (
+          <Box height='16px' />
+        )}
+      </CardActionArea>
     </Card>
   );
 }

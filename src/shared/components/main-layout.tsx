@@ -25,7 +25,7 @@ const Layout: React.FC = () => {
   return (
     <CustomAppContainer>
       <CustomAppBar guest={guest} />
-      <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+      <Container maxWidth='lg' sx={{ mt: 2, mb: 2 }} component='main'>
         <Outlet />
       </Container>
       <GlobalErrorHandler />

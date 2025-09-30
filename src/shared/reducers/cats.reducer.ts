@@ -18,16 +18,16 @@ const catsSlice = createSlice({
   initialState,
   reducers: {
     setNewCats(state, action: PayloadAction<Array<CatReadDTO>>) {
-      state.newCats = action.payload;
+      state.newCats = action.payload || [];
     },
     setOldCats(state, action: PayloadAction<Array<CatReadDTO>>) {
-      state.oldCats = action.payload;
+      state.oldCats = action.payload || [];
     },
     addCatsToOldCats(state, action: PayloadAction<Array<CatReadDTO>>) {
-      state.oldCats = [...state.oldCats, ...action.payload];
+      state.oldCats = [...(state.oldCats || []), ...(action.payload || [])];
     },
     setCatsByBreed(state, action: PayloadAction<Array<CatReadDTO>>) {
-      state.catsByBreed = action.payload;
+      state.catsByBreed = action.payload || [];
     },
   },
 });

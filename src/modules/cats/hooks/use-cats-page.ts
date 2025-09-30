@@ -13,7 +13,7 @@ export default function useCatsList() {
   const { data, isLoading: isGetRandomCatsLoading, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
 
   useEffect(() => {
-    if (data && newCats && newCats.length === 0 && oldCats && oldCats.length === 0) {
+    if (data && Array.isArray(newCats) && newCats.length === 0 && Array.isArray(oldCats) && oldCats.length === 0) {
       dispatch(setNewCats(data));
     }
   }, [data, newCats, oldCats, dispatch]);
@@ -31,13 +31,13 @@ export default function useCatsList() {
     dispatch(setFetchingMoreCats(true));
 
     try {
-      if (oldCats && oldCats.length === 0) {
-        dispatch(setOldCats(newCats));
+      if (Array.isArray(oldCats) && oldCats.length === 0) {
+        dispatch(setOldCats(newCats || []));
 
         const fetchedCats = await fetchUniqueCats();
         dispatch(setNewCats(fetchedCats));
       } else {
-        const existingCatIds = new Set([...newCats, ...oldCats].map((cat) => cat.id));
+        const existingCatIds = new Set([...(newCats || []), ...(oldCats || [])].map((cat) => cat.id));
         const freshCats: Array<CatReadDTO> = [];
         let attempts = 0;
         const maxAttempts = 15;
@@ -54,15 +54,15 @@ export default function useCatsList() {
           freshCats.push(...uniqueCats);
           uniqueCats.forEach((cat) => existingCatIds.add(cat.id));
 
-          if (attempts > 5 && uniqueCats && uniqueCats.length === 0) {
+          if (attempts > 5 && Array.isArray(uniqueCats) && uniqueCats.length === 0) {
             dispatch(setMaxAttemptsReached(true));
             console.warn('No unique cats found in recent attempts. API might be rate limited or out of unique cats.');
             break;
           }
         }
 
-        if (freshCats && freshCats.length > 0) {
-          dispatch(addCatsToOldCats(newCats));
+        if (Array.isArray(freshCats) && freshCats.length > 0) {
+          dispatch(addCatsToOldCats(newCats || []));
           dispatch(setNewCats(freshCats.slice(0, 10)));
         }
       }
@@ -74,9 +74,9 @@ export default function useCatsList() {
   };
 
   return {
-    newCats,
-    oldCats,
+    newCats: newCats || [],
+    oldCats: oldCats || [],
     handleGetMoreCats,
-    isLoading: isGetRandomCatsLoading && newCats.length === 0,
+    isLoading: isGetRandomCatsLoading && (!newCats || newCats.length === 0),
   };
 }

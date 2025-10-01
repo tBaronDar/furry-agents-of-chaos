@@ -19,16 +19,16 @@ const CatModal = () => {
     imageWidth,
     imageHeight,
     isLoading,
-    selectedCat,
+    cat,
     guest,
     refetchFavorites,
-    isSelectedCat,
+    favoriteCat,
     handleGuestCardClose,
     handleCatModalClose,
     toggleFavorite,
     showModal,
   } = useCatDetails();
-
+  const isSelectedCat = Boolean(favoriteCat);
   return (
     <Dialog open={showModal} onClose={() => {}} maxWidth='lg' fullWidth>
       <DialogTitle>Cat Details</DialogTitle>
@@ -39,15 +39,13 @@ const CatModal = () => {
               <Stack spacing={4} sx={{ p: 2, width: 500, flexShrink: 0 }}>
                 <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <Typography variant='h3'>{breedInfo?.name}</Typography>
-                  <IconButton
-                    aria-label='toggle favorite'
-                    disabled={isLoading}
-                    onClick={() => toggleFavorite(selectedCat.id)}>
+                  <IconButton aria-label='toggle favorite' disabled={isLoading} onClick={() => toggleFavorite(cat.id)}>
                     {isLoading ? (
                       <CircularProgress size={30} />
                     ) : (
                       <HeartIcon
                         sx={{
+                          cursor: 'pointer',
                           fontSize: '40px',
                           strokeWidth: '2px',
                           stroke: 'pink',
@@ -77,7 +75,7 @@ const CatModal = () => {
               <GuestCard
                 handleClose={() => handleGuestCardClose()}
                 currentGuest={guest}
-                selectedCat={selectedCat}
+                selectedCat={cat}
                 refetchFavorites={refetchFavorites}
               />
             ) : (
@@ -88,7 +86,7 @@ const CatModal = () => {
                   height: imageHeight,
                   objectFit: 'contain',
                 }}
-                image={selectedCat.url}
+                image={cat.url}
                 alt='Cat'
               />
             )}

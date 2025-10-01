@@ -11,10 +11,10 @@ export default function useCatsList() {
   const allCats = useSelector((state: RootState) => state.cats.cats);
 
   useEffect(() => {
-    if (data && allCats.length === 0) {
+    if (data && Array.isArray(data) && Array.isArray(allCats) && allCats.length === 0) {
       dispatch(setCats(data));
     }
-  }, [data, allCats.length, dispatch]);
+  }, [data, allCats, dispatch]);
 
   const handleGetMoreCats = useCallback(async () => {
     if (isLoadingCats) return;

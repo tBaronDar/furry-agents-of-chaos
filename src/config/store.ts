@@ -6,24 +6,22 @@ import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage';
 import { logger as reduxLogger } from 'redux-logger';
 
-import appReducer from '../shared/reducers/app.reducer';
-import loadingReducer from '../shared/reducers/loading.reducer';
-import favoritesReducer from '../shared/reducers/favorites.reducer';
 import api from '../shared/services/query/api';
+import appReducer from '../shared/reducers/app.reducer';
+import catsSlice from '../shared/reducers/cats.reducer';
 
 const rootPersistConfig = {
   key: 'root',
   storage,
-  whitelist: ['app', 'favorites'],
-  blacklist: [api.reducerPath, 'loading'],
+  whitelist: ['app'],
+  blacklist: [api.reducerPath, 'cats'],
 };
 
 export const rootReducer = persistReducer(
   rootPersistConfig,
   combineReducers({
     app: appReducer,
-    loading: loadingReducer,
-    favorites: favoritesReducer,
+    cats: catsSlice,
     [api.reducerPath]: api.reducer,
   })
 );

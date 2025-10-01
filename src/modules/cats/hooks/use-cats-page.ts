@@ -1,28 +1,30 @@
 import api from '../../../shared/services/query/api';
 import { useCallback, useState, useEffect } from 'react';
-import type { CatReadDTO } from '../../../shared/dto/cat-read';
+import { setCats } from '../../../shared/reducers/cats.reducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { type RootState } from '../../../config/store';
 
 export default function useCatsList() {
   const { data, isLoading: isLoadingCats, refetch } = api.useGetRandomCatsQuery({ limit: 10 });
-  const [allCats, setAllCats] = useState<Array<CatReadDTO>>([]);
   const [isLoadingMoreCats, setIsLoadingMoreCats] = useState(false);
+  const dispatch = useDispatch();
+  const allCats = useSelector((state: RootState) => state.cats.cats);
 
-  // Initialize with first batch of cats
   useEffect(() => {
     if (data && allCats.length === 0) {
-      setAllCats(data);
+      dispatch(setCats(data));
     }
-  }, [data, allCats.length]);
+  }, [data, allCats.length, dispatch]);
 
   const handleGetMoreCats = useCallback(async () => {
     if (isLoadingCats) return;
     setIsLoadingMoreCats(true);
     const result = await refetch();
     if (result.data && Array.isArray(result.data)) {
-      setAllCats((prevCats) => [...(result.data as Array<CatReadDTO>), ...prevCats]);
+      dispatch(setCats([...result.data, ...allCats]));
     }
     setIsLoadingMoreCats(false);
-  }, [isLoadingCats, refetch]);
+  }, [isLoadingCats, refetch, allCats, dispatch]);
 
   const isLoading = isLoadingCats || isLoadingMoreCats;
 

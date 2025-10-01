@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { store, persistor } from './config/store';
 import createRouter from './config/create-router';
 import theme from './config/theme';
+import CustomLoadingSpinner from './shared/components/custom-loading-spinner';
 
 // import './App.css';
 
@@ -13,8 +14,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <React.Suspense fallback={<div>Loading...</div>}>
+        <PersistGate loading={<CustomLoadingSpinner />} persistor={persistor}>
+          <React.Suspense fallback={<CustomLoadingSpinner />}>
             <RouterProvider router={createRouter(store)} />
           </React.Suspense>
         </PersistGate>

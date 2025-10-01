@@ -8,7 +8,7 @@ export type CustomLoadingSpinnerProps = {
 
 export default function CustomLoadingSpinner({ size = 40, type = 'global' }: CustomLoadingSpinnerProps) {
   console.log('CustomLoadingSpinner', size, type);
-
+  const isGlobal = type === 'global';
   return (
     <Box
       sx={{
@@ -16,7 +16,7 @@ export default function CustomLoadingSpinner({ size = 40, type = 'global' }: Cus
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: type === 'global' ? '100vh' : '100%',
+        height: isGlobal ? '100vh' : '100%',
         width: '100%',
         '::before': {
           content: '""',
@@ -28,7 +28,7 @@ export default function CustomLoadingSpinner({ size = 40, type = 'global' }: Cus
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
         },
       }}>
-      <CircularProgress />
+      <CircularProgress size={isGlobal ? 350 : size} />
     </Box>
   );
 }

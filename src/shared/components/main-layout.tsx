@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../config/store';
 import { ensureGuestExists } from '../reducers/app.reducer';
 import GlobalErrorHandler from './global-error-handler';
+//uncomment to test error boundary and rendering error
+// import ErrorTestButton from '../utils/components/ErrorTestButton';
 
 const Layout: React.FC = () => {
   const dispatch = useDispatch();
@@ -29,6 +31,7 @@ const Layout: React.FC = () => {
         <Outlet />
       </Container>
       <GlobalErrorHandler />
+      {/* <ErrorTestButton /> */}
     </CustomAppContainer>
   );
 };

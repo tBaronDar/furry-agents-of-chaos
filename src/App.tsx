@@ -2,23 +2,24 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { RouterProvider } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
 import { store, persistor } from './config/store';
 import createRouter from './config/create-router';
-import ErrorBoundary from './shared/components/error-boundary';
+import theme from './config/theme';
 
 // import './App.css';
 
 function App() {
   return (
-    <ErrorBoundary>
+    <ThemeProvider theme={theme}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <React.Suspense fallback={<div>Loading...</div>}>
-            <RouterProvider router={createRouter(store)} fallbackElement={<div>Loading...</div>} />
+            <RouterProvider router={createRouter(store)} />
           </React.Suspense>
         </PersistGate>
       </Provider>
-    </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 

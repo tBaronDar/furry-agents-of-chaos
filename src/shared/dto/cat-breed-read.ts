@@ -8,4 +8,4 @@ export const catBreedSchema = z.object({
   description: z.string().optional(),
 });
 
-export type CatBreed = z.infer<typeof catBreedSchema>;
+export type CatBreedReadDTO = z.infer<typeof catBreedSchema>;

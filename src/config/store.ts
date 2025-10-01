@@ -13,12 +13,11 @@ import breedsReducer from '../shared/reducers/breeds.reducer';
 import favoritesReducer from '../shared/reducers/favorites.reducer';
 import api from '../shared/services/query/api';
 
-//  persistence config - only persist app state and cat data
 const rootPersistConfig = {
   key: 'root',
   storage,
-  whitelist: ['app', 'cats', 'breeds', 'favorites'], // Persist app settings, cached cat data, breeds, and favorites
-  blacklist: [api.reducerPath, 'loading'], // Don't persist API cache or loading states, maybe add loading to whitelist? i dont know
+  whitelist: ['app', 'favorites'],
+  blacklist: [api.reducerPath, 'loading', 'cats', 'breeds'],
 };
 
 export const rootReducer = persistReducer(

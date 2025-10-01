@@ -1,9 +1,9 @@
 import Stack from '@mui/material/Stack';
-import type { CatBreed } from '../../../shared/dto/cat-breed-read';
+import type { CatBreedReadDTO } from '../../../shared/dto/cat-breed-read';
 import BreedCard from './breed-card';
 
 export type BreedsListProps = {
-  breeds: Array<CatBreed>;
+  breeds: Array<CatBreedReadDTO>;
 };
 
 export default function BreedsList(props: BreedsListProps) {

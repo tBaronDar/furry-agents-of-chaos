@@ -7,7 +7,7 @@ import baseQueryWithZodValidation from './zod-validation-enhancer';
 import { catReadSchema, type CatReadDTO } from '../../dto/cat-read';
 import { catBreedSchema } from '../../dto/cat-breed-read';
 import { favoriteCatSchema } from '../../dto/favorite-cat-read';
-import { type CatBreed } from '../../dto/cat-breed-read';
+import { type CatBreedReadDTO } from '../../dto/cat-breed-read';
 import { type FavoriteCatReadDTO } from '../../dto/favorite-cat-read';
 import { setBreeds } from '../../reducers/breeds.reducer';
 import { setFavoriteCats } from '../../reducers/favorites.reducer';
@@ -56,17 +56,17 @@ const api = createApi({
     }),
 
     // Get cat breeds
-    getCatBreeds: builder.query<Array<CatBreed>, void>({
+    getCatBreeds: builder.query<Array<CatBreedReadDTO>, void>({
       query: () => ({
         url: '/v1/breeds',
         dataSchema: z.array(catBreedSchema),
       }),
       providesTags: ['Cats'],
-      transformResponse(response: Array<CatBreed>, meta) {
+      transformResponse(response: Array<CatBreedReadDTO>, meta) {
         // Store the fetched breeds in the breeds slice
         const metaWithState = meta as {
-          baseQueryMeta?: { state?: { breeds?: { breeds?: Array<CatBreed> } } };
-          dispatch?: (action: { type: string; payload: Array<CatBreed> }) => void;
+          baseQueryMeta?: { state?: { breeds?: { breeds?: Array<CatBreedReadDTO> } } };
+          dispatch?: (action: { type: string; payload: Array<CatBreedReadDTO> }) => void;
         };
         const state = metaWithState?.baseQueryMeta?.state;
         if (state?.breeds?.breeds?.length === 0) {

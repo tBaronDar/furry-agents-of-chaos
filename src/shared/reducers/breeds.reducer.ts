@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { CatBreed } from '../dto/cat-breed-read';
+import type { CatBreedReadDTO } from '../dto/cat-breed-read';
 
 interface BreedsState {
-  breeds: Array<CatBreed>;
+  breeds: Array<CatBreedReadDTO>;
 }
 
 const initialState: BreedsState = {
@@ -13,7 +13,7 @@ const breedsSlice = createSlice({
   name: 'breeds',
   initialState,
   reducers: {
-    setBreeds(state, action: PayloadAction<Array<CatBreed>>) {
+    setBreeds(state, action: PayloadAction<Array<CatBreedReadDTO>>) {
       state.breeds = action.payload;
     },
   },

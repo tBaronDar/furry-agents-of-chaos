@@ -2,9 +2,9 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { type RootState } from '../../../../../config/store';
 import api from '../../../../services/query/api';
-import type { Cat } from '../../../../dto/cat';
+import type { CatReadDTO } from '../../../../dto/cat-read';
 import { useState } from 'react';
-import type { CatBreed } from '../../../../dto/cat-breed-read';
+import type { CatBreedReadDTO } from '../../../../dto/cat-breed-read';
 
 export const useCatDetails = () => {
   const { pathname } = useLocation();
@@ -21,13 +21,13 @@ export const useCatDetails = () => {
   const [showModal, setShowModal] = useState(true);
 
   const { data: selectedCatData, isLoading: isSelectedCatLoading } = api.useGetCatByIdQuery({ id: selectedCatId });
-  const selectedCat = selectedCatData ?? ({} as Cat);
+  const selectedCat = selectedCatData ?? ({} as CatReadDTO);
 
   const isSelectedCat = favoriteCats.some((fav) => fav.image_id === selectedCat.id);
 
   const [addToFavoritesMutation, { isLoading: isAddingToFavorites }] = api.useAddToFavoritesMutation();
   const [removeFromFavoritesMutation, { isLoading: isRemovingFromFavorites }] = api.useRemoveFromFavoritesMutation();
-  const breedInfo: CatBreed | null = selectedCat.breeds?.[0] || null;
+  const breedInfo: CatBreedReadDTO | null = selectedCat.breeds?.[0] || null;
   const maxImageWidth = 600;
   const aspectRatio = selectedCat.width / selectedCat.height;
   const imageWidth = Math.min(selectedCat.width, maxImageWidth);

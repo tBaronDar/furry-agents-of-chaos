@@ -1,13 +1,13 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import type { CatBreed } from '../../shared/dto/cat-breed-read';
+import type { CatBreedReadDTO } from '../../shared/dto/cat-breed-read';
 import BreedsList from './components/breeds-list';
 import useBreedsCats from './hooks/use-breed-cats';
 import { Outlet } from 'react-router-dom';
 
 export type BreedsPageInnerProps = {
-  breeds: Array<CatBreed>;
+  breeds: Array<CatBreedReadDTO>;
 };
 
 const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {

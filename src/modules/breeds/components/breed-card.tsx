@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import type { CatBreed } from '../../../shared/dto/cat-breed-read';
+import type { CatBreedReadDTO } from '../../../shared/dto/cat-breed-read';
 import CatsList from '../../cats/components/cats-list';
 import useBreedCard from '../hooks/use-breed-card';
 import Stack from '@mui/material/Stack';
@@ -10,7 +10,7 @@ import ExpandIcon from '@mui/icons-material/KeyboardArrowUp';
 import Tooltip from '@mui/material/Tooltip';
 
 export type BreedCardProps = {
-  breed: CatBreed;
+  breed: CatBreedReadDTO;
 };
 
 export default function BreedCard(props: BreedCardProps) {

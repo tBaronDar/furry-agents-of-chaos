@@ -6,7 +6,7 @@ export const catReadSchema = z.object({
   url: z.string(),
   width: z.number(),
   height: z.number(),
-  breeds: z.array(catBreedSchema).optional(),
+  breeds: z.array(catBreedSchema),
 });
 
 export type CatReadDTO = z.infer<typeof catReadSchema>;

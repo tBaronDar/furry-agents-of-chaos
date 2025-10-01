@@ -4,6 +4,7 @@ import type { CatReadDTO } from '../../../shared/dto/cat-read';
 import api from '../../../shared/services/query/api';
 import type { RootState } from '../../../config/store';
 import { useSelector } from 'react-redux';
+import { chunkArray } from '../../../shared/utils/chunk-arrays';
 
 type CatsListProps = {
   cats: Array<CatReadDTO>;
@@ -13,20 +14,28 @@ type CatsListProps = {
 export default function CatsList(props: CatsListProps) {
   const { cats, isLoading } = props;
   const guest = useSelector((state: RootState) => state.app.guest);
-  const { data } = api.useGetFavoritesQuery({ subId: guest.id });
+  const { data, isLoading: isLoadingFavorites } = api.useGetFavoritesQuery({ subId: guest.id });
   const favorites = data || [];
+  const catChunks = chunkArray(cats, 10);
+
   return (
-    <Stack
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gap: '16px',
-        marginTop: '16px',
-        padding: '8px',
-      }}>
-      {cats.map((cat) => (
-        <CatCard key={cat.id} cat={cat} isLoading={isLoading} favorites={favorites} />
-      ))}
-    </Stack>
+    <>
+      {cats.length > 0 &&
+        catChunks.map((chunk, chunkIndex) => (
+          <Stack
+            key={`chunk-${chunk[0]?.id || chunkIndex}`}
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+              gap: '16px',
+              marginTop: chunkIndex === 0 ? '16px' : '32px',
+              padding: '8px',
+            }}>
+            {chunk.map((cat) => (
+              <CatCard key={cat.id} cat={cat} isLoading={isLoading || isLoadingFavorites} favorites={favorites} />
+            ))}
+          </Stack>
+        ))}
+    </>
   );
 }

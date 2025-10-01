@@ -12,9 +12,10 @@ const CatsPage: React.FC = () => {
   return (
     <Stack
       sx={{
-        height: 'calc(100vh - 120px)',
+        height: 'calc(100vh - 60px)',
         overflowY: 'hidden',
         padding: '16px',
+        pb: '24px',
       }}>
       <Stack direction='row' spacing={2} justifyContent='space-between' alignItems='center'>
         <Typography variant='h4' component='h1' gutterBottom>

@@ -73,7 +73,7 @@ export default function CatCard(props: CatCardProps) {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          {isFavorite ? (
+          {isFavorite && !isLoading ? (
             <>
               <HeartIcon sx={{ fontSize: '12px', fill: 'pink' }} />
               <Typography sx={{ fontSize: '12px', fontStyle: 'italic', textAlign: 'right', py: '2px' }} variant='body1'>

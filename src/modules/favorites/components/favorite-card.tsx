@@ -17,7 +17,7 @@ export default function FavoriteCard(props: FavoriteCardProps) {
   const { isLoading: isRemovingFromFavorites } = removeFromFavoritesResult;
 
   const handleDeleteFavorite = async (id: number) => {
-    await removeFromFavoritesMutation({ favoriteId: id.toString() }).unwrap();
+    await removeFromFavoritesMutation({ favoriteId: id }).unwrap();
     api.util.invalidateTags(['Favorites']);
   };
 

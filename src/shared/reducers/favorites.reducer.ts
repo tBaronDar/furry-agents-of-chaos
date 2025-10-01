@@ -16,9 +16,12 @@ const favoritesSlice = createSlice({
     setFavoriteCats(state, action: PayloadAction<Array<FavoriteCatReadDTO>>) {
       state.favoriteCats = action.payload;
     },
+    removeFavoriteById(state, action: PayloadAction<number>) {
+      state.favoriteCats = state.favoriteCats.filter((fav) => fav.id !== action.payload);
+    },
   },
 });
 
-export const { setFavoriteCats } = favoritesSlice.actions;
+export const { setFavoriteCats, removeFavoriteById } = favoritesSlice.actions;
 
 export default favoritesSlice.reducer;

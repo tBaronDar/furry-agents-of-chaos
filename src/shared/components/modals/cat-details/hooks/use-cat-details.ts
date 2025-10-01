@@ -48,7 +48,7 @@ export const useCatDetails = () => {
       } else {
         const favoriteRecord = favoriteCats.find((fav) => fav.image_id === catId);
         if (favoriteRecord) {
-          await removeFromFavoritesMutation({ favoriteId: favoriteRecord.id.toString() }).unwrap();
+          await removeFromFavoritesMutation({ favoriteId: favoriteRecord.id }).unwrap();
           api.util.invalidateTags(['Favorites']);
         }
       }

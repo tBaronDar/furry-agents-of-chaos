@@ -9,9 +9,6 @@ import { catBreedSchema } from '../../dto/cat-breed-read';
 import { favoriteCatSchema } from '../../dto/favorite-cat-read';
 import { type CatBreedReadDTO } from '../../dto/cat-breed-read';
 import { type FavoriteCatReadDTO } from '../../dto/favorite-cat-read';
-import { setBreeds } from '../../reducers/breeds.reducer';
-import { setFavoriteCats } from '../../reducers/favorites.reducer';
-import { setCatsByBreed } from '../../reducers/cats.reducer';
 
 export type CatApiErrorKey = BaseErrorKey;
 
@@ -62,19 +59,6 @@ const api = createApi({
         dataSchema: z.array(catBreedSchema),
       }),
       providesTags: ['Cats'],
-      transformResponse(response: Array<CatBreedReadDTO>, meta) {
-        // Store the fetched breeds in the breeds slice
-        const metaWithState = meta as {
-          baseQueryMeta?: { state?: { breeds?: { breeds?: Array<CatBreedReadDTO> } } };
-          dispatch?: (action: { type: string; payload: Array<CatBreedReadDTO> }) => void;
-        };
-        const state = metaWithState?.baseQueryMeta?.state;
-        if (state?.breeds?.breeds?.length === 0) {
-          // Dispatch the action to store breeds in the slice
-          metaWithState?.dispatch?.(setBreeds(response));
-        }
-        return response;
-      },
     }),
 
     // Search cats by breed
@@ -88,19 +72,6 @@ const api = createApi({
         dataSchema: z.array(catReadSchema),
       }),
       providesTags: ['Cats'],
-      transformResponse(response: Array<CatReadDTO>, meta) {
-        // Store the fetched cats by breed in the cats slice
-        const metaWithState = meta as {
-          baseQueryMeta?: { state?: { cats?: { catsByBreed?: Array<CatReadDTO> } } };
-          dispatch?: (action: { type: string; payload: Array<CatReadDTO> }) => void;
-        };
-        const state = metaWithState?.baseQueryMeta?.state;
-        if (state?.cats?.catsByBreed?.length === 0) {
-          // Dispatch the action to store cats by breed in the slice
-          metaWithState?.dispatch?.(setCatsByBreed(response));
-        }
-        return response;
-      },
     }),
 
     // Favorites management
@@ -113,19 +84,6 @@ const api = createApi({
         dataSchema: z.array(favoriteCatSchema),
       }),
       providesTags: ['Favorites'],
-      transformResponse(response: Array<FavoriteCatReadDTO>, meta) {
-        // Store the fetched favorites in the favorites slice
-        const metaWithState = meta as {
-          baseQueryMeta?: { state?: { favorites?: { favoriteCats?: Array<FavoriteCatReadDTO> } } };
-          dispatch?: (action: { type: string; payload: Array<FavoriteCatReadDTO> }) => void;
-        };
-        const state = metaWithState?.baseQueryMeta?.state;
-        if (state?.favorites?.favoriteCats?.length === 0) {
-          // Dispatch the action to store favorites in the slice
-          metaWithState?.dispatch?.(setFavoriteCats(response));
-        }
-        return response;
-      },
     }),
 
     addToFavorites: builder.mutation<{ message: string; id: number }, { imageId: string; subId: string }>({
@@ -140,7 +98,7 @@ const api = createApi({
       invalidatesTags: ['Favorites'],
     }),
 
-    removeFromFavorites: builder.mutation<{ message: string }, { favoriteId: string }>({
+    removeFromFavorites: builder.mutation<{ message: string }, { favoriteId: number }>({
       query: ({ favoriteId }) => ({
         url: `/v1/favourites/${favoriteId}`,
         method: 'DELETE',

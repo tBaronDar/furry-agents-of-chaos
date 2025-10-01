@@ -4,24 +4,10 @@ import Stack from '@mui/material/Stack';
 import useCatsList from './hooks/use-cats-page';
 import Button from '@mui/material/Button';
 import CatsList from './components/cats-list';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../../config/store';
 import { Outlet } from 'react-router-dom';
-import type { CatReadDTO } from '../../shared/dto/cat-read';
 
-export type CatsListProps = {
-  newCats: Array<CatReadDTO>;
-  oldCats: Array<CatReadDTO>;
-  handleGetMoreCats: () => void;
-  isLoading: boolean;
-};
-
-const CatsPageInner = (props: CatsListProps) => {
-  const { newCats, oldCats, handleGetMoreCats, isLoading } = props;
-
-  const isInitialLoading = useSelector((state: RootState) => state.loading.isInitialLoading);
-  const isFetchingMoreCats = useSelector((state: RootState) => state.loading.isFetchingMoreCats);
-  const maxAttemptsReached = useSelector((state: RootState) => state.loading.maxAttemptsReached);
+const CatsPage: React.FC = () => {
+  const { cats, handleGetMoreCats, isLoading } = useCatsList();
 
   return (
     <Stack
@@ -34,12 +20,8 @@ const CatsPageInner = (props: CatsListProps) => {
         <Typography variant='h4' component='h1' gutterBottom>
           Here you can browse random cat agents.
         </Typography>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={() => handleGetMoreCats()}
-          disabled={isFetchingMoreCats || maxAttemptsReached}>
-          {isFetchingMoreCats ? 'Loading...' : 'More Agents'}
+        <Button variant='contained' color='primary' onClick={() => handleGetMoreCats()} disabled={isLoading}>
+          {isLoading ? 'Loading...' : 'More Agents'}
         </Button>
       </Stack>
       <Stack
@@ -61,28 +43,12 @@ const CatsPageInner = (props: CatsListProps) => {
           },
         }}>
         <Typography variant='h6' component='h2' gutterBottom sx={{ mt: 2, mb: 1 }}>
-          New Agents ({newCats.length})
+          Cat Agents ({cats.length})
         </Typography>
-        <CatsList cats={newCats} isLoading={isLoading || isInitialLoading || isFetchingMoreCats} />
-
-        {oldCats && oldCats.length > 0 && (
-          <>
-            <Typography variant='h6' component='h2' gutterBottom sx={{ mt: 2, mb: 1 }}>
-              Previous Agents ({oldCats.length})
-            </Typography>
-            <CatsList cats={oldCats} isLoading={false} />
-          </>
-        )}
+        <CatsList cats={cats} isLoading={isLoading} />
       </Stack>
       <Outlet />
     </Stack>
-  );
-};
-
-const CatsPage: React.FC = () => {
-  const { newCats, oldCats, handleGetMoreCats, isLoading } = useCatsList();
-  return (
-    <CatsPageInner newCats={newCats} oldCats={oldCats} handleGetMoreCats={handleGetMoreCats} isLoading={isLoading} />
   );
 };
 

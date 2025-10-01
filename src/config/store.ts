@@ -8,8 +8,6 @@ import { logger as reduxLogger } from 'redux-logger';
 
 import appReducer from '../shared/reducers/app.reducer';
 import loadingReducer from '../shared/reducers/loading.reducer';
-import catsReducer from '../shared/reducers/cats.reducer';
-import breedsReducer from '../shared/reducers/breeds.reducer';
 import favoritesReducer from '../shared/reducers/favorites.reducer';
 import api from '../shared/services/query/api';
 
@@ -17,7 +15,7 @@ const rootPersistConfig = {
   key: 'root',
   storage,
   whitelist: ['app', 'favorites'],
-  blacklist: [api.reducerPath, 'loading', 'cats', 'breeds'],
+  blacklist: [api.reducerPath, 'loading'],
 };
 
 export const rootReducer = persistReducer(
@@ -25,8 +23,6 @@ export const rootReducer = persistReducer(
   combineReducers({
     app: appReducer,
     loading: loadingReducer,
-    cats: catsReducer,
-    breeds: breedsReducer,
     favorites: favoritesReducer,
     [api.reducerPath]: api.reducer,
   })

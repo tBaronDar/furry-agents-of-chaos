@@ -10,7 +10,6 @@ import type { Guest } from '../dto/guest';
 import { Logout } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import { createInitialGuest, setGuest } from '../reducers/app.reducer';
-import { setNewCats, setOldCats } from '../reducers/cats.reducer';
 import { useDispatch } from 'react-redux';
 import api from '../services/query/api';
 
@@ -34,8 +33,6 @@ export default function CustomAppBar(props: CustomAppBarProps) {
     if (result) {
       const newGuest = createInitialGuest();
       dispatch(setGuest(newGuest));
-      dispatch(setNewCats([]));
-      dispatch(setOldCats([]));
       api.util.invalidateTags(['Cats']);
     }
   };

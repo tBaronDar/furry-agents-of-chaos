@@ -27,7 +27,7 @@ export default function About() {
                 {
                   name: 'offset',
                   options: {
-                    offset: [0, -14],
+                    offset: [0, -4],
                   },
                 },
               ],
@@ -55,7 +55,7 @@ export default function About() {
                 {
                   name: 'offset',
                   options: {
-                    offset: [0, -14],
+                    offset: [0, -4],
                   },
                 },
               ],
@@ -83,7 +83,7 @@ export default function About() {
                 {
                   name: 'offset',
                   options: {
-                    offset: [0, -14],
+                    offset: [0, -4],
                   },
                 },
               ],
@@ -111,7 +111,7 @@ export default function About() {
                 {
                   name: 'offset',
                   options: {
-                    offset: [0, -14],
+                    offset: [0, -4],
                   },
                 },
               ],

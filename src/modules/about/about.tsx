@@ -11,6 +11,7 @@ const repoUrl = 'https://github.com/tBaronDar/furry-agents-of-chaos';
 const vercelUrl = 'https://furry-agents-of-chaos.vercel.app/';
 const linkedinUrl = 'https://www.linkedin.com/in/themis-darelis-320a608b/';
 const githubUrl = 'https://github.com/tBaronDar';
+const githubDiagram = 'https://gitdiagram.com/tbarondar/furry-agents-of-chaos';
 
 export default function About() {
   const isMobile = useMediaQuery('(max-width: 480px)');
@@ -126,6 +127,34 @@ export default function About() {
             target='_blank'>
             <Typography variant='body1' color='text.primary' fontSize={isMobile ? '0.8rem' : '1rem'}>
               My LinkedIn profile
+            </Typography>
+            <LinkIcon fontSize={isMobile ? 'small' : 'medium'} />
+          </Stack>
+        </Tooltip>
+        <Tooltip
+          title={linkedinUrl}
+          placement='bottom-start'
+          slotProps={{
+            popper: {
+              modifiers: [
+                {
+                  name: 'offset',
+                  options: {
+                    offset: [0, -4],
+                  },
+                },
+              ],
+            },
+          }}>
+          <Stack
+            direction='row'
+            justifyContent='space-between'
+            component={'a'}
+            href={githubDiagram}
+            sx={{ textDecoration: 'none' }}
+            target='_blank'>
+            <Typography variant='body1' color='text.primary' fontSize={isMobile ? '0.8rem' : '1rem'}>
+              The github diagram for this project
             </Typography>
             <LinkIcon fontSize={isMobile ? 'small' : 'medium'} />
           </Stack>

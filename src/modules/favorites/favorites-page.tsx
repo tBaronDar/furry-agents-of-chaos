@@ -1,16 +1,17 @@
 import React from 'react';
-import { Typography, Box, Stack } from '@mui/material';
+import { Typography, Box, Stack, useMediaQuery } from '@mui/material';
 import useFavoritesPage from './hooks/use-favorites-page';
 import FavoritesList from './components/favorites-list';
 import CustomLoadingSpinner from '../../shared/components/custom-loading-spinner';
 
 const FavoritesPage: React.FC = () => {
   const { favoriteCats, isLoading } = useFavoritesPage();
+  const isTablet = useMediaQuery('(max-width: 720px)');
 
   if (favoriteCats.length === 0 && !isLoading) {
     return (
       <Box>
-        <Typography variant='h4' component='h1' gutterBottom>
+        <Typography variant={isTablet ? 'h6' : 'h4'} component='h1' gutterBottom>
           My Favorites
         </Typography>
         <Typography variant='body1' color='warning'>
@@ -40,7 +41,7 @@ const FavoritesPage: React.FC = () => {
           },
         },
       }}>
-      <Typography variant='h4' component='h1' gutterBottom>
+      <Typography variant={isTablet ? 'h6' : 'h4'} component='h1' gutterBottom>
         Your Agent&apos;s Roster
       </Typography>
       {isLoading ? <CustomLoadingSpinner /> : <FavoritesList favoriteCats={favoriteCats} />}

@@ -27,18 +27,24 @@ const CatModal = () => {
     toggleFavorite,
     showModal,
     isSelectedCat,
+    isTablet,
+    isMobile,
   } = useCatDetails();
 
   return (
     <Dialog open={showModal} onClose={() => {}} maxWidth='lg' fullWidth>
       <DialogTitle>Cat Details</DialogTitle>
       <DialogContent sx={{ overflow: 'visible' }}>
-        <Stack sx={{ flexDirection: 'row', minHeight: imageHeight }}>
+        <Stack sx={{ flexDirection: isTablet ? 'column' : 'row', minHeight: imageHeight }}>
           {breedInfo ? (
-            <Stack justifyContent='space-between'>
-              <Stack spacing={4} sx={{ p: 2, width: 500, flexShrink: 0 }}>
+            <Stack justifyContent='space-between' alignItems={isTablet ? 'center' : 'flex-start'}>
+              <Stack
+                spacing={isMobile ? 2 : 4}
+                sx={{ p: 2, width: isMobile ? 200 : isTablet ? 300 : 500, flexShrink: 0 }}>
                 <Stack direction='row' justifyContent='space-between' alignItems='center'>
-                  <Typography variant='h3'>{breedInfo?.name}</Typography>
+                  <Typography variant='h3' fontSize={isMobile ? '1.25rem' : isTablet ? '1.5rem' : '2rem'}>
+                    {breedInfo?.name}
+                  </Typography>
                   <IconButton aria-label='toggle favorite' disabled={isLoading} onClick={() => toggleFavorite(cat.id)}>
                     {isLoading ? (
                       <CircularProgress size={30} />
@@ -55,13 +61,21 @@ const CatModal = () => {
                     )}
                   </IconButton>
                 </Stack>
-                <Typography variant='body1' sx={{ textWrap: 'pretty' }}>
+                <Typography variant='body1' sx={{ textWrap: 'pretty' }} fontSize={isMobile ? '0.8rem' : '1rem'}>
                   {breedInfo?.description}
                 </Typography>
-                <Typography variant='body1'>{`Temperament: ${breedInfo?.temperament}`}</Typography>
-                <Typography variant='body1'>{`Origin: ${breedInfo?.origin}`}</Typography>
+                <Typography variant='body1' fontSize={isMobile ? '0.9rem' : '1rem'}>
+                  {`Temperament: ${breedInfo?.temperament}`}
+                </Typography>
+                <Typography variant='body1' fontSize={isMobile ? '0.9rem' : '1rem'}>
+                  {`Origin: ${breedInfo?.origin}`}
+                </Typography>
               </Stack>
-              <Typography variant='body1' fontStyle='italic' color='text.secondary'>
+              <Typography
+                variant='body1'
+                fontStyle='italic'
+                color='text.secondary'
+                fontSize={isMobile ? '0.8rem' : '1rem'}>
                 Click on the heart to add to favorites
               </Typography>
             </Stack>

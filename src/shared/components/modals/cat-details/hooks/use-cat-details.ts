@@ -5,8 +5,11 @@ import { type RootState } from '../../../../../config/store';
 import api from '../../../../services/query/api';
 import type { CatReadDTO } from '../../../../dto/cat-read';
 import type { CatBreedReadDTO } from '../../../../dto/cat-breed-read';
+import { useMediaQuery } from '@mui/material';
 
 export const useCatDetails = () => {
+  const isTablet = useMediaQuery('(max-width: 720px)');
+  const isMobile = useMediaQuery('(max-width: 480px)');
   const [showGuestCard, setShowGuestCard] = useState(false);
   const [showModal, setShowModal] = useState(true);
   const navigate = useNavigate();
@@ -32,8 +35,8 @@ export const useCatDetails = () => {
   const breedInfo: CatBreedReadDTO | null = cat.breeds?.[0] || null;
   //image staff
   const aspectRatio = cat.width / cat.height;
-  const maxImageHeight = 600;
-  const maxImageWidth = 600;
+  const maxImageHeight = isMobile ? 200 : isTablet ? 400 : 600;
+  const maxImageWidth = isMobile ? 200 : isTablet ? 400 : 600;
   let imageHeight = 0;
   let imageWidth = 0;
   if (aspectRatio < 1.2) {
@@ -97,5 +100,7 @@ export const useCatDetails = () => {
     isLoading,
     showModal,
     isSelectedCat,
+    isTablet,
+    isMobile,
   };
 };

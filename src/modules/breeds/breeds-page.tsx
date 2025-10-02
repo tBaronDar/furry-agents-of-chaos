@@ -6,6 +6,7 @@ import BreedsList from './components/breeds-list';
 import useBreedsCats from './hooks/use-breed-cats';
 import { Outlet } from 'react-router-dom';
 import CustomLoadingSpinner from '../../shared/components/custom-loading-spinner';
+import { useMediaQuery } from '@mui/material';
 
 export type BreedsPageInnerProps = {
   breeds: Array<CatBreedReadDTO>;
@@ -14,13 +15,14 @@ export type BreedsPageInnerProps = {
 
 const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
   const { breeds, isBreedsLoading } = props;
+  const isTablet = useMediaQuery('(max-width: 720px)');
   return (
     <Stack>
-      <Stack direction='row' justifyContent='space-between' alignItems='center'>
-        <Typography variant='h4' component='h1' gutterBottom>
+      <Stack direction={isTablet ? 'column' : 'row'} justifyContent='space-between' alignItems='center'>
+        <Typography variant={isTablet ? 'h6' : 'h4'} component='h1' gutterBottom>
           Cat Breeds
         </Typography>
-        <Typography variant='body1' color='text.secondary'>
+        <Typography variant='body1' color='text.secondary' fontSize={isTablet ? '0.8rem' : '1rem'}>
           Browse different cat breeds and their characteristics.
         </Typography>
       </Stack>
@@ -43,7 +45,11 @@ const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
             },
           },
         }}>
-        {isBreedsLoading ? <CustomLoadingSpinner type='local' size={160} /> : <BreedsList breeds={breeds} />}
+        {isBreedsLoading ? (
+          <CustomLoadingSpinner type='local' size={isTablet ? 80 : 160} />
+        ) : (
+          <BreedsList breeds={breeds} />
+        )}
       </Stack>
       <Outlet />
     </Stack>

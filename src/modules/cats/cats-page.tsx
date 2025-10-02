@@ -5,20 +5,21 @@ import useCatsList from './hooks/use-cats-page';
 import Button from '@mui/material/Button';
 import CatsList from './components/cats-list';
 import { Outlet } from 'react-router-dom';
+import { useMediaQuery } from '@mui/material';
 
 const CatsPage: React.FC = () => {
   const { cats, handleGetMoreCats, isLoading } = useCatsList();
-
+  const isTablet = useMediaQuery('(max-width: 720px)');
   return (
     <Stack
       sx={{
         height: 'calc(100vh - 60px)',
         overflowY: 'hidden',
-        padding: '16px',
+        padding: isTablet ? '8px' : '16px',
         pb: '24px',
       }}>
       <Stack direction='row' spacing={2} justifyContent='space-between' alignItems='center'>
-        <Typography variant='h4' component='h1' gutterBottom>
+        <Typography variant={isTablet ? 'h6' : 'h4'} component='h1' gutterBottom>
           Here you can browse random cat agents.
         </Typography>
         <Button variant='contained' color='primary' onClick={() => handleGetMoreCats()} disabled={isLoading}>
@@ -43,7 +44,11 @@ const CatsPage: React.FC = () => {
             },
           },
         }}>
-        <Typography variant='h6' component='h2' gutterBottom sx={{ mt: 2, mb: 1 }}>
+        <Typography
+          variant='h6'
+          component='h2'
+          gutterBottom
+          sx={{ mt: 2, mb: 1, fontSize: isTablet ? '1rem' : '1.25rem' }}>
           Cat Agents ({cats.length})
         </Typography>
         <CatsList cats={cats} isLoading={isLoading} />

@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import { createInitialGuest, setGuest } from '../reducers/app.reducer';
 import { useDispatch } from 'react-redux';
 import api from '../services/query/api';
+import { useMediaQuery } from '@mui/material';
 
 const linkStyles: SxProps = {
   flexGrow: 1,
@@ -36,42 +37,49 @@ export default function CustomAppBar(props: CustomAppBarProps) {
       api.util.invalidateTags(['Cats']);
     }
   };
+
+  const isTablet = useMediaQuery('(max-width: 720px)');
+  const isMobile = useMediaQuery('(max-width: 480px)');
   return (
     <AppBar position='static'>
       <Toolbar>
         <Pets sx={{ mr: 2 }} />
-        <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-          Furry Agents of Chaos(or FAC)
-        </Typography>
+        {!isMobile ? (
+          <Typography variant='h6' component='div' fontSize={isTablet ? '1.5rem' : '1.25rem'} sx={{ flexGrow: 1 }}>
+            {isTablet ? 'FAC' : 'Furry Agents of Chaos(or FAC)'}
+          </Typography>
+        ) : null}
 
-        <Stack direction='row' spacing={2} alignItems='center'>
+        <Stack direction='row' spacing={isMobile ? '3px' : 2} alignItems='center'>
           {guest.guestName && (
             <Stack direction='row' spacing={2} alignItems='center'>
-              <Typography variant='body1' sx={{ mr: 2 }}>
-                Welcome, {guest.guestName}!
-              </Typography>
+              {!isMobile && (
+                <Typography variant='body1' sx={{ mr: 2 }}>
+                  Hi, {guest.guestName}!
+                </Typography>
+              )}
               <IconButton onClick={handleLogout}>
-                <Logout sx={{ color: 'white' }} />
+                <Logout fontSize={isTablet ? 'small' : 'medium'} sx={{ color: 'white', p: isMobile ? '0px' : '2px' }} />
               </IconButton>
             </Stack>
           )}
           <Link component={RouterLink} to='/cats' sx={linkStyles}>
-            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }} fontSize={isTablet ? '1rem' : '1.25rem'}>
               Home
             </Typography>
           </Link>
           <Link component={RouterLink} to='/breeds' sx={linkStyles}>
-            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }} fontSize={isTablet ? '1rem' : '1.25rem'}>
               Breeds
             </Typography>
           </Link>
           <Link component={RouterLink} to='/favorites' sx={linkStyles}>
-            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }} fontSize={isTablet ? '1rem' : '1.25rem'}>
               Favorites
             </Typography>
           </Link>
           <Link component={RouterLink} to='/about' sx={linkStyles}>
-            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }} fontSize={isTablet ? '1rem' : '1.25rem'}>
               About
             </Typography>
           </Link>

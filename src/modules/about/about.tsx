@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LinkIcon from '@mui/icons-material/Link';
 import Tooltip from '@mui/material/Tooltip';
+import { useMediaQuery } from '@mui/material';
 
 const repoUrl = 'https://github.com/tBaronDar/furry-agents-of-chaos';
 const vercelUrl = 'https://furry-agents-of-chaos.vercel.app/';
@@ -12,8 +13,9 @@ const linkedinUrl = 'https://www.linkedin.com/in/themis-darelis-320a608b/';
 const githubUrl = 'https://github.com/tBaronDar';
 
 export default function About() {
+  const isMobile = useMediaQuery('(max-width: 480px)');
   return (
-    <Card elevation={5} sx={{ maxWidth: '540px', mx: 'auto', mt: 4, pb: 4 }}>
+    <Card elevation={5} sx={{ maxWidth: isMobile ? '100%' : '540px', mx: 'auto', mt: 4, pb: 4 }}>
       <CardHeader title='Useful Links' />
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         <Tooltip
@@ -38,10 +40,10 @@ export default function About() {
             target='_blank'
             direction='row'
             justifyContent='space-between'>
-            <Typography variant='body1' color='text.primary'>
+            <Typography variant='body1' color='text.primary' fontSize={isMobile ? '0.8rem' : '1rem'}>
               The github repository for this project
             </Typography>
-            <LinkIcon />
+            <LinkIcon fontSize={isMobile ? 'small' : 'medium'} />
           </Stack>
         </Tooltip>
         <Tooltip
@@ -66,10 +68,10 @@ export default function About() {
             href={vercelUrl}
             sx={{ textDecoration: 'none' }}
             target='_blank'>
-            <Typography variant='body1' color='text.primary'>
+            <Typography variant='body1' color='text.primary' fontSize={isMobile ? '0.8rem' : '1rem'}>
               The Vercel deployment for this project
             </Typography>
-            <LinkIcon />
+            <LinkIcon fontSize={isMobile ? 'small' : 'medium'} />
           </Stack>
         </Tooltip>
         <Tooltip
@@ -94,10 +96,10 @@ export default function About() {
             href={githubUrl}
             sx={{ textDecoration: 'none' }}
             target='_blank'>
-            <Typography variant='body1' color='text.primary'>
+            <Typography variant='body1' color='text.primary' fontSize={isMobile ? '0.8rem' : '1rem'}>
               My GitHub profile
             </Typography>
-            <LinkIcon />
+            <LinkIcon fontSize={isMobile ? 'small' : 'medium'} />
           </Stack>
         </Tooltip>
         <Tooltip
@@ -122,10 +124,10 @@ export default function About() {
             href={linkedinUrl}
             sx={{ textDecoration: 'none' }}
             target='_blank'>
-            <Typography variant='body1' color='text.primary'>
+            <Typography variant='body1' color='text.primary' fontSize={isMobile ? '0.8rem' : '1rem'}>
               My LinkedIn profile
             </Typography>
-            <LinkIcon />
+            <LinkIcon fontSize={isMobile ? 'small' : 'medium'} />
           </Stack>
         </Tooltip>
       </CardContent>

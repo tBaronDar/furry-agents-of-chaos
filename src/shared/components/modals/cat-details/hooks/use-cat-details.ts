@@ -47,6 +47,8 @@ export const useCatDetails = () => {
     imageWidth = Math.min(cat.width, maxImageWidth);
   }
 
+  const [isSelectedCat, setIsSelectedCat] = useState<boolean>(Boolean(favoriteCat));
+
   const isLoading = isAddingToFavorites || isRemovingFromFavorites || isSelectedCatLoading;
 
   async function toggleFavorite(id: string) {
@@ -57,9 +59,11 @@ export const useCatDetails = () => {
       const newFavoriteStatus = !isCurrentlyFavorite;
 
       if (newFavoriteStatus) {
+        setIsSelectedCat(true);
         await addToFavoritesMutation({ imageId: id, subId: guest.id }).unwrap();
       } else {
         if (favoriteCat) {
+          setIsSelectedCat(false);
           await removeFromFavoritesMutation({ favoriteId: favoriteCat.id }).unwrap();
         }
       }
@@ -83,7 +87,6 @@ export const useCatDetails = () => {
     guest,
     refetchFavorites,
     selectedCatId,
-    favoriteCat,
     toggleFavorite,
     handleGuestCardClose,
     handleCatModalClose,
@@ -93,5 +96,6 @@ export const useCatDetails = () => {
     imageHeight,
     isLoading,
     showModal,
+    isSelectedCat,
   };
 };

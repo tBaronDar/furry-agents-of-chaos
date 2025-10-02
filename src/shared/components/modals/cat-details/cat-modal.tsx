@@ -22,14 +22,13 @@ const CatModal = () => {
     cat,
     guest,
     refetchFavorites,
-    favoriteCat,
     handleGuestCardClose,
     handleCatModalClose,
     toggleFavorite,
     showModal,
+    isSelectedCat,
   } = useCatDetails();
 
-  const isSelectedCat = Boolean(favoriteCat);
   return (
     <Dialog open={showModal} onClose={() => {}} maxWidth='lg' fullWidth>
       <DialogTitle>Cat Details</DialogTitle>

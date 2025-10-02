@@ -5,6 +5,7 @@ import api from '../../../shared/services/query/api';
 import type { RootState } from '../../../config/store';
 import { useSelector } from 'react-redux';
 import { chunkArray } from '../../../shared/utils/chunk-arrays';
+import CustomLoadingSpinner from '../../../shared/components/custom-loading-spinner';
 
 type CatsListProps = {
   cats: Array<CatReadDTO>;
@@ -18,9 +19,13 @@ export default function CatsList(props: CatsListProps) {
   const favorites = data || [];
   const catChunks = chunkArray(cats, 10);
 
+  const isListLoading = isLoading || isLoadingFavorites;
   return (
     <>
-      {cats.length > 0 &&
+      {isListLoading ? (
+        <CustomLoadingSpinner type='local' size={160} />
+      ) : (
+        cats.length > 0 &&
         catChunks.map((chunk, chunkIndex) => (
           <Stack
             key={`chunk-${chunk[0]?.id || chunkIndex}`}
@@ -35,7 +40,8 @@ export default function CatsList(props: CatsListProps) {
               <CatCard key={cat.id} cat={cat} isLoading={isLoading || isLoadingFavorites} favorites={favorites} />
             ))}
           </Stack>
-        ))}
+        ))
+      )}
     </>
   );
 }

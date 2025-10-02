@@ -5,13 +5,15 @@ import type { CatBreedReadDTO } from '../../shared/dto/cat-breed-read';
 import BreedsList from './components/breeds-list';
 import useBreedsCats from './hooks/use-breed-cats';
 import { Outlet } from 'react-router-dom';
+import CustomLoadingSpinner from '../../shared/components/custom-loading-spinner';
 
 export type BreedsPageInnerProps = {
   breeds: Array<CatBreedReadDTO>;
+  isBreedsLoading: boolean;
 };
 
 const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
-  const { breeds } = props;
+  const { breeds, isBreedsLoading } = props;
   return (
     <Stack>
       <Stack direction='row' justifyContent='space-between' alignItems='center'>
@@ -41,7 +43,7 @@ const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
             },
           },
         }}>
-        <BreedsList breeds={breeds} />
+        {isBreedsLoading ? <CustomLoadingSpinner type='local' size={160} /> : <BreedsList breeds={breeds} />}
       </Stack>
       <Outlet />
     </Stack>
@@ -49,9 +51,9 @@ const BreedsPageInner: React.FC<BreedsPageInnerProps> = (props) => {
 };
 
 function BreedsPage() {
-  const { breedsData } = useBreedsCats();
+  const { breedsData, isBreedsLoading } = useBreedsCats();
   const breeds = breedsData || [];
-  return <BreedsPageInner breeds={breeds} />;
+  return <BreedsPageInner breeds={breeds} isBreedsLoading={isBreedsLoading} />;
 }
 
 export default BreedsPage;

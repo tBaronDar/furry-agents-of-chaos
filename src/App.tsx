@@ -14,8 +14,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <PersistGate loading={<CustomLoadingSpinner />} persistor={persistor}>
-          <React.Suspense fallback={<CustomLoadingSpinner />}>
+        <PersistGate loading={<CustomLoadingSpinner type='global' />} persistor={persistor}>
+          <React.Suspense fallback={<CustomLoadingSpinner type='global' />}>
             <RouterProvider router={createRouter(store)} />
           </React.Suspense>
         </PersistGate>

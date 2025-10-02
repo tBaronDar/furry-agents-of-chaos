@@ -2,11 +2,12 @@ import React from 'react';
 import { Typography, Box, Stack } from '@mui/material';
 import useFavoritesPage from './hooks/use-favorites-page';
 import FavoritesList from './components/favorites-list';
+import CustomLoadingSpinner from '../../shared/components/custom-loading-spinner';
 
 const FavoritesPage: React.FC = () => {
-  const { favoriteCats } = useFavoritesPage();
+  const { favoriteCats, isLoading } = useFavoritesPage();
 
-  if (favoriteCats.length === 0) {
+  if (favoriteCats.length === 0 && !isLoading) {
     return (
       <Box>
         <Typography variant='h4' component='h1' gutterBottom>
@@ -42,7 +43,7 @@ const FavoritesPage: React.FC = () => {
       <Typography variant='h4' component='h1' gutterBottom>
         Your Agent&apos;s Roster
       </Typography>
-      <FavoritesList favoriteCats={favoriteCats} />
+      {isLoading ? <CustomLoadingSpinner /> : <FavoritesList favoriteCats={favoriteCats} />}
     </Stack>
   );
 };

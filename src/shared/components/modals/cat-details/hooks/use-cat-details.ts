@@ -31,10 +31,21 @@ export const useCatDetails = () => {
 
   const breedInfo: CatBreedReadDTO | null = cat.breeds?.[0] || null;
   //image staff
-  const maxImageWidth = 600;
   const aspectRatio = cat.width / cat.height;
-  const imageWidth = Math.min(cat.width, maxImageWidth);
-  const imageHeight = imageWidth / aspectRatio;
+  const maxImageHeight = 600;
+  const maxImageWidth = 600;
+  let imageHeight = 0;
+  let imageWidth = 0;
+  if (aspectRatio < 1.2) {
+    imageHeight = Math.min(cat.height, maxImageHeight);
+    imageWidth = imageHeight * aspectRatio;
+  } else if (aspectRatio > 1.2) {
+    imageWidth = Math.min(cat.width, maxImageWidth);
+    imageHeight = imageWidth / aspectRatio;
+  } else {
+    imageHeight = Math.min(cat.height, maxImageHeight);
+    imageWidth = Math.min(cat.width, maxImageWidth);
+  }
 
   const isLoading = isAddingToFavorites || isRemovingFromFavorites || isSelectedCatLoading;
 

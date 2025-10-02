@@ -28,6 +28,7 @@ const CatModal = () => {
     toggleFavorite,
     showModal,
   } = useCatDetails();
+
   const isSelectedCat = Boolean(favoriteCat);
   return (
     <Dialog open={showModal} onClose={() => {}} maxWidth='lg' fullWidth>

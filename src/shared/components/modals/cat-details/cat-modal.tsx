@@ -21,7 +21,6 @@ const CatModal = () => {
     isLoading,
     cat,
     guest,
-    refetchFavorites,
     handleGuestCardClose,
     handleCatModalClose,
     toggleFavorite,
@@ -29,6 +28,7 @@ const CatModal = () => {
     isSelectedCat,
     isTablet,
     isMobile,
+    setIsSelectedCat,
   } = useCatDetails();
 
   return (
@@ -89,7 +89,7 @@ const CatModal = () => {
                     handleClose={() => handleGuestCardClose()}
                     currentGuest={guest}
                     selectedCat={cat}
-                    refetchFavorites={refetchFavorites}
+                    setIsSelectedCat={setIsSelectedCat}
                   />
                 ) : (
                   <CardMedia

@@ -17,34 +17,28 @@ export type GuestCardProps = {
   handleClose: () => void;
   currentGuest: Guest;
   selectedCat: CatReadDTO;
-  refetchFavorites: () => void;
+  setIsSelectedCat: (isSelectedCat: boolean) => void;
 };
 
 const nameSchema = z.string().min(1).max(20);
 
 export default function GuestCard(props: GuestCardProps) {
-  const { handleClose, currentGuest, selectedCat, refetchFavorites } = props;
+  const { handleClose, currentGuest, selectedCat, setIsSelectedCat } = props;
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const [addToFavoritesMutation] = api.useAddToFavoritesMutation();
 
   const handleSubmit = async () => {
-    try {
-      const validatedName = nameSchema.parse(name);
-      const updatedGuest: Guest = {
-        ...currentGuest,
-        guestName: validatedName,
-      };
-      dispatch(setGuest(updatedGuest));
-      await addToFavoritesMutation({ imageId: selectedCat.id, subId: currentGuest.id }).unwrap();
-      refetchFavorites();
-      handleClose();
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        setError('Name must be between 1 and 20 characters');
-      }
-    }
+    const validatedName = nameSchema.parse(name);
+    const updatedGuest: Guest = {
+      ...currentGuest,
+      guestName: validatedName,
+    };
+    dispatch(setGuest(updatedGuest));
+    await addToFavoritesMutation({ imageId: selectedCat.id, subId: currentGuest.id }).unwrap();
+    setIsSelectedCat(true);
+    handleClose();
   };
   return (
     <Card elevation={5}>

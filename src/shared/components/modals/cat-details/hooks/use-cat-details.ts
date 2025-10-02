@@ -25,7 +25,7 @@ export const useCatDetails = () => {
   //redux
   const guest = useSelector((state: RootState) => state.app.guest);
   //fetching
-  const { data: favoriteCatsData, refetch: refetchFavorites } = api.useGetFavoritesQuery({ subId: guest.id });
+  const { data: favoriteCatsData } = api.useGetFavoritesQuery({ subId: guest.id });
   const favoriteCats = favoriteCatsData || [];
   const { data: selectedCatData, isLoading: isSelectedCatLoading } = api.useGetCatByIdQuery({ id: selectedCatId });
   const cat = selectedCatData ?? ({} as CatReadDTO);
@@ -88,7 +88,6 @@ export const useCatDetails = () => {
   return {
     cat,
     guest,
-    refetchFavorites,
     selectedCatId,
     toggleFavorite,
     handleGuestCardClose,
@@ -102,5 +101,6 @@ export const useCatDetails = () => {
     isSelectedCat,
     isTablet,
     isMobile,
+    setIsSelectedCat,
   };
 };

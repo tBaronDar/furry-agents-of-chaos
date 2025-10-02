@@ -1,3 +1,4 @@
+import api from '../services/query/api';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Pets from '@mui/icons-material/Pets';
@@ -11,7 +12,6 @@ import { Logout } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import { createInitialGuest, setGuest } from '../reducers/app.reducer';
 import { useDispatch } from 'react-redux';
-import api from '../services/query/api';
 import { useMediaQuery } from '@mui/material';
 
 const linkStyles: SxProps = {
